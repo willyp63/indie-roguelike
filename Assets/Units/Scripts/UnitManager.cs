@@ -81,6 +81,24 @@ public class UnitManager : Singleton<UnitManager>
         RemoveFromSpatialGrid(unit);
     }
 
+    public void SpawnUnits(Vector2 spawnPosition, Unit unitPrefab, UnitType unitType, int count)
+    {
+        List<Vector2> spawnPositions = UnitUtils.GetSpreadPositions(spawnPosition, count);
+        string unitTypeName = unitType == UnitType.Friend ? "Friendly" : "Enemy";
+
+        foreach (Vector2 pos in spawnPositions)
+        {
+            // Instantiate the unit at each position
+            GameObject spawnedUnit = Instantiate(unitPrefab.gameObject, pos, Quaternion.identity);
+
+            // Set the unit type on the Health component
+            Health healthComponent = spawnedUnit.GetComponent<Health>();
+            healthComponent?.SetUnitType(unitType);
+
+            Debug.Log($"Spawned {unitTypeName} {unitPrefab.gameObject.name} at {pos}");
+        }
+    }
+
     private void UpdateSpatialGrid()
     {
         // Clear and rebuild spatial grid

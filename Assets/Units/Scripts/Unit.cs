@@ -119,7 +119,6 @@ public class Unit : MonoBehaviour
 
     public void UpdateTargetFromManager()
     {
-        Debug.Log("UpdateTargetFromManager");
         if (isStatic)
             return;
 
