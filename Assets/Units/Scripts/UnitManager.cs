@@ -154,12 +154,62 @@ public class UnitManager : Singleton<UnitManager>
             && viewportPoint.z > 0; // Must be in front of camera
     }
 
-    public Vector2 GetMoveDirection(Unit unit)
+    // TODO: adjust the magic numbers in this method
+    public Vector2 GetMoveDirection(Unit unit, Vector2 targetDirection)
     {
-        return WaypointManager.Instance.GetWaypointDirection(
-            unit.transform.position,
-            unit.Health().Type()
+        // If no waypoint direction, no movement needed
+        if (targetDirection.magnitude < 0.1f)
+            return targetDirection;
+
+        // Check for units ahead in the movement path
+        float lookAheadDistance = 1f;
+
+        // Get nearby units for collision avoidance
+        List<Unit> nearbyUnits = GetNearbyUnits(
+            unit.Health(),
+            lookAheadDistance,
+            new List<UnitType> { unit.Health().Type() }
         );
+
+        // Check if there's a unit directly ahead
+        Unit blockingUnit = null;
+        float minDistance = float.MaxValue;
+
+        foreach (Unit nearbyUnit in nearbyUnits)
+        {
+            if (nearbyUnit == unit)
+                continue;
+
+            Vector2 toUnit = nearbyUnit.transform.position - unit.transform.position;
+            float distance = toUnit.magnitude;
+
+            // Check if this unit is roughly in our movement direction
+            float dotProduct = Vector2.Dot(toUnit.normalized, targetDirection.normalized);
+
+            if (dotProduct > 0.7f && distance < minDistance)
+            {
+                blockingUnit = nearbyUnit;
+                minDistance = distance;
+            }
+        }
+
+        // If no blocking unit, use waypoint direction
+        if (blockingUnit == null)
+            return targetDirection;
+
+        // Calculate avoidance direction
+        Vector2 toBlockingUnit = blockingUnit.transform.position - unit.transform.position;
+        Vector2 perpendicularLeft = new Vector2(-targetDirection.y, targetDirection.x);
+        Vector2 perpendicularRight = new Vector2(targetDirection.y, -targetDirection.x);
+
+        // Determine which side to avoid towards based on the blocking unit's position
+        float leftDot = Vector2.Dot(toBlockingUnit, perpendicularLeft);
+        Vector2 avoidanceDirection = leftDot > 0 ? perpendicularRight : perpendicularLeft;
+
+        // Blend waypoint direction with avoidance direction
+        Vector2 blendedDirection = (targetDirection + avoidanceDirection * 0.7f).normalized;
+
+        return blendedDirection;
     }
 
     public List<Unit> GetNearbyUnits(Health health, float radius, List<UnitType> includeTypes)

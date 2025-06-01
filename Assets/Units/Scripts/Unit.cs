@@ -115,14 +115,6 @@ public class Unit : MonoBehaviour
         if (isStatic)
             return;
 
-        if (targetUnit != null)
-        {
-            FacePosition(targetUnit.transform.position);
-            UpdateState(UnitState.Pursuing, "Walk");
-            movementBehaviour.Move((targetUnit.transform.position - transform.position).normalized);
-            return;
-        }
-
         if (!moveDirection.Equals(Vector2.zero))
         {
             FacePosition(transform.position + new Vector3(moveDirection.x, moveDirection.y, 0f));
@@ -139,8 +131,16 @@ public class Unit : MonoBehaviour
         if (isStatic)
             return;
 
+        // TODO: only update target if old target was cleared
+        //   (need to check if target is still in range and visible, then clear if not)
         targetUnit = UnitManager.Instance.FindNearestVisibleTarget(this);
-        moveDirection = UnitManager.Instance.GetMoveDirection(this);
+
+        Vector2 targetDirection =
+            targetUnit != null
+                ? (targetUnit.transform.position - transform.position).normalized
+                : WaypointManager.Instance.GetWaypointDirection(transform.position, health.Type());
+
+        moveDirection = UnitManager.Instance.GetMoveDirection(this, targetDirection);
     }
 
     private void UpdateState(

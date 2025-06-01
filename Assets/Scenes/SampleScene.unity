@@ -487,10 +487,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spatialUpdateInterval: 0.1
   targetingUpdateInterval: 0.2
-  avoidanceDistance: 0.5
-  avoidanceForce: 8
-  avoidanceUpdateInterval: 0.05
-  enableAvoidance: 1
   screenBuffer: 1
 --- !u!4 &110910028
 Transform:
@@ -89033,6 +89029,10 @@ PrefabInstance:
     - target: {fileID: 7616590068785201712, guid: c00499fad17d44445954a9f88b4b39ae, type: 3}
       propertyPath: type
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7616590068785201712, guid: c00499fad17d44445954a9f88b4b39ae, type: 3}
+      propertyPath: maxHealth
+      value: 100000
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
