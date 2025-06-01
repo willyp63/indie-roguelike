@@ -487,6 +487,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spatialUpdateInterval: 0.1
   targetingUpdateInterval: 0.2
+  avoidanceDistance: 0.5
+  avoidanceForce: 8
+  avoidanceUpdateInterval: 0.05
+  enableAvoidance: 1
   screenBuffer: 1
 --- !u!4 &110910028
 Transform:
@@ -87005,10 +87009,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: -0.5
-    y: -0.5
-    width: 2
-    height: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 34

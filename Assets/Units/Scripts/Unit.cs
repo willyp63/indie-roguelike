@@ -18,8 +18,18 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private bool isStatic = false;
 
+    public bool IsStatic()
+    {
+        return isStatic;
+    }
+
     [SerializeField]
     private float visionRange = 8;
+
+    public float VisionRange()
+    {
+        return visionRange;
+    }
 
     private Health health;
 
@@ -129,11 +139,8 @@ public class Unit : MonoBehaviour
         if (isStatic)
             return;
 
-        targetUnit = UnitManager.Instance.FindNearestVisibleTarget(this, visionRange);
-        moveDirection = WaypointManager.Instance.GetWaypointDirection(
-            transform.position,
-            health.Type()
-        );
+        targetUnit = UnitManager.Instance.FindNearestVisibleTarget(this);
+        moveDirection = UnitManager.Instance.GetMoveDirection(this);
     }
 
     private void UpdateState(

@@ -154,6 +154,14 @@ public class UnitManager : Singleton<UnitManager>
             && viewportPoint.z > 0; // Must be in front of camera
     }
 
+    public Vector2 GetMoveDirection(Unit unit)
+    {
+        return WaypointManager.Instance.GetWaypointDirection(
+            unit.transform.position,
+            unit.Health().Type()
+        );
+    }
+
     public List<Unit> GetNearbyUnits(Health health, float radius, List<UnitType> includeTypes)
     {
         List<Unit> nearbyUnits = new List<Unit>();
@@ -197,11 +205,11 @@ public class UnitManager : Singleton<UnitManager>
         return nearbyUnits;
     }
 
-    public Unit FindNearestVisibleTarget(Unit searcher, float visionRange)
+    public Unit FindNearestVisibleTarget(Unit searcher)
     {
         var nearbyUnits = GetNearbyUnits(
             searcher.Health(),
-            visionRange,
+            searcher.VisionRange(),
             new List<UnitType> { searcher.Health().OppositeType() }
         );
 
