@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using Unity.Collections;
-using Unity.Jobs;
 using UnityEngine;
 
 public class UnitManager : Singleton<UnitManager>
@@ -256,50 +254,6 @@ public class UnitManager : Singleton<UnitManager>
         );
 
         return hit1.collider == null && hit2.collider == null;
-    }
-
-    public GameObject FindBestWaypoint(Unit unit)
-    {
-        WaypointZone zone = WaypointManager.Instance.GetZoneForUnit(unit);
-        if (zone == null)
-            return null;
-
-        Waypoint bestWaypoint = null;
-        int highestPriority = int.MinValue;
-        float closestDistance = float.MaxValue;
-
-        foreach (Waypoint waypoint in zone.waypoints)
-        {
-            // Check if waypoint has line of sight
-            if (!HasLineOfSightFast(unit, waypoint.transform.position))
-                continue;
-
-            // Check if this waypoint has higher priority
-            if (waypoint.Priority() > highestPriority)
-            {
-                bestWaypoint = waypoint;
-                highestPriority = waypoint.Priority();
-                closestDistance = Vector3.Distance(
-                    unit.transform.position,
-                    waypoint.transform.position
-                );
-            }
-            // If same priority, choose the closer one
-            else if (waypoint.Priority() == highestPriority)
-            {
-                float distance = Vector3.Distance(
-                    unit.transform.position,
-                    waypoint.transform.position
-                );
-                if (distance < closestDistance)
-                {
-                    bestWaypoint = waypoint;
-                    closestDistance = distance;
-                }
-            }
-        }
-
-        return bestWaypoint?.transform.gameObject;
     }
 
     private void BatchProcessTargeting()

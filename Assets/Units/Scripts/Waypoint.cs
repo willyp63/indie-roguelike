@@ -11,4 +11,9 @@ public class Waypoint : MonoBehaviour
     {
         return priority;
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(transform.position, 0.33f);
+    }
 }

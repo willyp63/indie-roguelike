@@ -45,7 +45,7 @@ public class Unit : MonoBehaviour
     private Animator animator;
 
     private Unit targetUnit;
-    private GameObject pursueTarget;
+    private Vector2 moveDirection;
 
     private float lastAttackTime = Mathf.NegativeInfinity;
     private float lastAttackDuration = 0f;
@@ -105,16 +105,23 @@ public class Unit : MonoBehaviour
         if (isStatic)
             return;
 
-        if (pursueTarget == null)
+        if (targetUnit != null)
         {
-            UpdateState(UnitState.Idle, "Idle");
+            FacePosition(targetUnit.transform.position);
+            UpdateState(UnitState.Pursuing, "Walk");
+            movementBehaviour.Move((targetUnit.transform.position - transform.position).normalized);
             return;
         }
 
-        FacePosition(pursueTarget.transform.position);
-        UpdateState(UnitState.Pursuing, "Walk");
+        if (!moveDirection.Equals(Vector2.zero))
+        {
+            FacePosition(transform.position + new Vector3(moveDirection.x, moveDirection.y, 0f));
+            UpdateState(UnitState.Pursuing, "Walk");
+            movementBehaviour.Move(moveDirection);
+            return;
+        }
 
-        movementBehaviour.Move(pursueTarget);
+        UpdateState(UnitState.Idle, "Idle");
     }
 
     public void UpdateTargetFromManager()
@@ -123,7 +130,10 @@ public class Unit : MonoBehaviour
             return;
 
         targetUnit = UnitManager.Instance.FindNearestVisibleTarget(this, visionRange);
-        pursueTarget = targetUnit?.gameObject ?? UnitManager.Instance.FindBestWaypoint(this);
+        moveDirection = WaypointManager.Instance.GetWaypointDirection(
+            transform.position,
+            health.Type()
+        );
     }
 
     private void UpdateState(

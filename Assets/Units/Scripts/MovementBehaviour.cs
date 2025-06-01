@@ -22,5 +22,5 @@ public abstract class MovementBehaviour : MonoBehaviour
         return speed * speedFactor;
     }
 
-    public abstract void Move(GameObject target);
+    public abstract void Move(Vector2 moveDirection);
 }
