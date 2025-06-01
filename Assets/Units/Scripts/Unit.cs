@@ -131,15 +131,40 @@ public class Unit : MonoBehaviour
         if (isStatic)
             return;
 
-        // TODO: only update target if old target was cleared
-        //   (need to check if target is still in range and visible, then clear if not)
-        targetUnit = UnitManager.Instance.FindNearestVisibleTarget(this);
+        // clear target if it's out of range or not visible
+        if (targetUnit != null)
+        {
+            if (
+                !UnitUtils.IsWithinRange(health, targetUnit.Health(), visionRange)
+                || !UnitManager.Instance.HasLineOfSight(this, targetUnit.transform.position)
+            )
+            {
+                targetUnit = null;
+            }
+        }
 
-        Vector2 targetDirection =
-            targetUnit != null
-                ? (targetUnit.transform.position - transform.position).normalized
-                : WaypointManager.Instance.GetWaypointDirection(transform.position, health.Type());
+        // look for a new target if we don't have one
+        if (targetUnit == null)
+        {
+            targetUnit = UnitManager.Instance.FindNearestVisibleTarget(this);
+        }
 
+        Vector2 targetDirection;
+        if (targetUnit != null)
+        {
+            // move towards target unit
+            targetDirection = (targetUnit.transform.position - transform.position).normalized;
+        }
+        else
+        {
+            // move towards waypoint (precomputed pathfinding)
+            targetDirection = WaypointManager.Instance.GetWaypointDirection(
+                transform.position,
+                health.Type()
+            );
+        }
+
+        // adjust move direction to avoid other units
         moveDirection = UnitManager.Instance.GetMoveDirection(this, targetDirection);
     }
 

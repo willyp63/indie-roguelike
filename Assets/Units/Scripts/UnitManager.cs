@@ -21,7 +21,7 @@ public class UnitManager : Singleton<UnitManager>
     private float spatialUpdateInterval = 0.1f;
 
     [SerializeField]
-    private float targetingUpdateInterval = 0.2f;
+    private float targetingUpdateInterval = 0.15f;
 
     // Screen bounds buffer - units must be this much inside screen bounds to be considered "on screen"
     [SerializeField]
@@ -31,7 +31,7 @@ public class UnitManager : Singleton<UnitManager>
     private float lastTargetingUpdate;
 
     // Batch processing
-    private int unitsPerFrameForTargeting = 50; // Process 50 units per frame for targeting
+    private int unitsPerFrameForTargeting = 100; // Process 50 units per frame for targeting
     private int currentTargetingIndex = 0;
 
     void Update()
@@ -162,7 +162,7 @@ public class UnitManager : Singleton<UnitManager>
             return targetDirection;
 
         // Check for units ahead in the movement path
-        float lookAheadDistance = 1f;
+        float lookAheadDistance = 0.5f;
 
         // Get nearby units for collision avoidance
         List<Unit> nearbyUnits = GetNearbyUnits(
@@ -275,7 +275,7 @@ public class UnitManager : Singleton<UnitManager>
             if (dSqrToUnit < closestDistanceSqr)
             {
                 // Only check line of sight for the closest candidate to save performance
-                if (HasLineOfSightFast(searcher, unit.transform.position))
+                if (HasLineOfSight(searcher, unit.transform.position))
                 {
                     closestDistanceSqr = dSqrToUnit;
                     closestUnit = unit;
@@ -286,7 +286,7 @@ public class UnitManager : Singleton<UnitManager>
         return closestUnit;
     }
 
-    private bool HasLineOfSightFast(Unit unit, Vector3 to)
+    public bool HasLineOfSight(Unit unit, Vector3 to)
     {
         Vector3 direction = to - unit.transform.position;
         float distance = direction.magnitude;
