@@ -14,6 +14,7 @@ public class ManaManager : Singleton<ManaManager>
 
     public float CurrentMana => currentMana;
     public float MaxMana => maxMana;
+    public float ManaRegenRate => manaRegenRate;
 
     public bool HasEnoughMana(int cost) => currentMana >= cost;
 

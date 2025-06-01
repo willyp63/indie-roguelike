@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class UnitManager : Singleton<UnitManager>
 {
-    private static readonly float WAYPOINT_LOOKBACK_DISTANCE = 3f;
-
     // Spatial partitioning grid
     private Dictionary<Vector2Int, List<Unit>> spatialGrid =
         new Dictionary<Vector2Int, List<Unit>>();
@@ -16,14 +14,20 @@ public class UnitManager : Singleton<UnitManager>
     private List<Unit> allUnits = new List<Unit>();
     private List<Unit> enemyUnits = new List<Unit>();
     private List<Unit> friendlyUnits = new List<Unit>();
-    private List<GameObject> cachedWaypoints;
 
     // Priority queue for newly registered units
     private Queue<Unit> newUnitsPriorityQueue = new Queue<Unit>();
 
     // Update intervals for batched operations
-    public float spatialUpdateInterval = 0.1f;
-    public float targetingUpdateInterval = 0.2f;
+    [SerializeField]
+    private float spatialUpdateInterval = 0.1f;
+
+    [SerializeField]
+    private float targetingUpdateInterval = 0.2f;
+
+    // Screen bounds buffer - units must be this much inside screen bounds to be considered "on screen"
+    [SerializeField]
+    private float screenBuffer = 1f;
 
     private float lastSpatialUpdate;
     private float lastTargetingUpdate;
@@ -31,12 +35,6 @@ public class UnitManager : Singleton<UnitManager>
     // Batch processing
     private int unitsPerFrameForTargeting = 50; // Process 50 units per frame for targeting
     private int currentTargetingIndex = 0;
-
-    void Start()
-    {
-        var waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
-        cachedWaypoints = new List<GameObject>(waypoints);
-    }
 
     void Update()
     {
@@ -140,9 +138,34 @@ public class UnitManager : Singleton<UnitManager>
         );
     }
 
+    private bool IsOnScreen(Vector3 worldPosition)
+    {
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null)
+            return true; // If no camera, assume on screen
+
+        Vector3 viewportPoint = mainCamera.WorldToViewportPoint(worldPosition);
+
+        // Check if within viewport bounds with buffer
+        float bufferNormalized = screenBuffer / Screen.width; // Normalize buffer to viewport space
+
+        return viewportPoint.x >= -bufferNormalized
+            && viewportPoint.x <= 1f + bufferNormalized
+            && viewportPoint.y >= -bufferNormalized
+            && viewportPoint.y <= 1f + bufferNormalized
+            && viewportPoint.z > 0; // Must be in front of camera
+    }
+
     public List<Unit> GetNearbyUnits(Health health, float radius, List<UnitType> includeTypes)
     {
         List<Unit> nearbyUnits = new List<Unit>();
+
+        // If the source health is off-screen, return no units
+        if (!IsOnScreen(health.transform.position))
+        {
+            return nearbyUnits; // Return empty list
+        }
+
         Vector2Int centerGrid = WorldToGrid(health.transform.position);
 
         // Check surrounding grid cells
@@ -163,6 +186,7 @@ public class UnitManager : Singleton<UnitManager>
                             && !unit.Health().IsDead()
                             && includeTypes.Contains(unit.Health().Type())
                             && UnitUtils.IsWithinRange(health, unit.Health(), radius)
+                            && IsOnScreen(unit.transform.position) // Only include units that are on screen
                         )
                         {
                             nearbyUnits.Add(unit);
@@ -236,54 +260,46 @@ public class UnitManager : Singleton<UnitManager>
 
     public GameObject FindBestWaypoint(Unit unit)
     {
-        if (cachedWaypoints.Count == 0)
+        WaypointZone zone = WaypointManager.Instance.GetZoneForUnit(unit);
+        if (zone == null)
             return null;
 
-        GameObject bestWaypoint = null;
-        float bestDistanceScore = 0f;
-        bool isEnemy = unit.Health().IsEnemy();
+        Waypoint bestWaypoint = null;
+        int highestPriority = int.MinValue;
+        float closestDistance = float.MaxValue;
 
-        foreach (GameObject waypoint in cachedWaypoints)
+        foreach (Waypoint waypoint in zone.waypoints)
         {
-            if (waypoint == null)
+            // Check if waypoint has line of sight
+            if (!HasLineOfSightFast(unit, waypoint.transform.position))
                 continue;
 
-            Vector2 waypointPos = waypoint.transform.position;
-
-            // Check direction
-            if (isEnemy)
+            // Check if this waypoint has higher priority
+            if (waypoint.Priority() > highestPriority)
             {
-                if (waypointPos.x >= unit.transform.position.x + WAYPOINT_LOOKBACK_DISTANCE) // WAYPOINT_LOOKBACK_DISTANCE
-                    continue;
+                bestWaypoint = waypoint;
+                highestPriority = waypoint.Priority();
+                closestDistance = Vector3.Distance(
+                    unit.transform.position,
+                    waypoint.transform.position
+                );
             }
-            else
+            // If same priority, choose the closer one
+            else if (waypoint.Priority() == highestPriority)
             {
-                if (waypointPos.x <= unit.transform.position.x - WAYPOINT_LOOKBACK_DISTANCE)
-                    continue;
-            }
-
-            // Calculate distance score
-            float distanceScore = (waypointPos.x - unit.transform.position.x) * (isEnemy ? -1 : 1);
-
-            if (
-                bestWaypoint == null
-                || distanceScore > bestDistanceScore
-                || (
-                    Mathf.Approximately(distanceScore, bestDistanceScore)
-                    && Vector3.Distance(unit.transform.position, waypointPos)
-                        < Vector3.Distance(unit.transform.position, bestWaypoint.transform.position)
-                )
-            )
-            {
-                if (HasLineOfSightFast(unit, waypointPos))
+                float distance = Vector3.Distance(
+                    unit.transform.position,
+                    waypoint.transform.position
+                );
+                if (distance < closestDistance)
                 {
                     bestWaypoint = waypoint;
-                    bestDistanceScore = distanceScore;
+                    closestDistance = distance;
                 }
             }
         }
 
-        return bestWaypoint;
+        return bestWaypoint?.transform.gameObject;
     }
 
     private void BatchProcessTargeting()

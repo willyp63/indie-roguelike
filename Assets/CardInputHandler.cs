@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -164,7 +165,7 @@ public class CardInputHandler : Singleton<CardInputHandler>
         );
     }
 
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(playableBounds.center, playableBounds.size);

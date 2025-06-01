@@ -10,6 +10,9 @@ public class CardUIButton : MonoBehaviour, IPointerDownHandler
     private UnityEngine.UI.Image cardImage;
 
     [SerializeField]
+    private UnityEngine.UI.Image cooldownImage;
+
+    [SerializeField]
     private UnityEngine.UI.Image glowImage;
 
     [SerializeField]
@@ -37,6 +40,11 @@ public class CardUIButton : MonoBehaviour, IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         onMouseDown?.Invoke(handIndex);
+    }
+
+    public void SetCooldownPercent(float cooldownPercent)
+    {
+        cooldownImage.transform.localScale = new Vector3(1f, cooldownPercent, 1f);
     }
 
     public void SetActive(bool active)

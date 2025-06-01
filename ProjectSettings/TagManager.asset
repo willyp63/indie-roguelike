@@ -9,7 +9,6 @@ TagManager:
   - Neutral
   - Projectile
   - Wall
-  - Waypoint
   layers:
   - Default
   - TransparentFX

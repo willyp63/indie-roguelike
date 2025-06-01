@@ -26,11 +26,32 @@ public class CardsUI : Singleton<CardsUI>
         UpdateCardUI();
     }
 
+    private void Update()
+    {
+        UpdateCardCooldowns();
+    }
+
     public void SetActiveCardIndex(int index)
     {
         for (int i = 0; i < handCardUIButtons.Count; i++)
         {
             handCardUIButtons[i].SetActive(i == index);
+        }
+    }
+
+    private void UpdateCardCooldowns()
+    {
+        List<Card> hand = DeckManager.Instance.GetHand();
+
+        for (int i = 0; i < hand.Count; i++)
+        {
+            int cardCost = hand[i].manaCost;
+            float maxCooldown = cardCost / ManaManager.Instance.ManaRegenRate;
+            float currentCooldown = Mathf.Max(
+                0,
+                (cardCost - ManaManager.Instance.CurrentMana) / ManaManager.Instance.ManaRegenRate
+            );
+            handCardUIButtons[i].SetCooldownPercent(currentCooldown / maxCooldown);
         }
     }
 

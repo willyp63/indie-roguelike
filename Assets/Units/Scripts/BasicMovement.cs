@@ -32,14 +32,14 @@ public class BasicMovement : MovementBehaviour
         Vector2 moveForce = (targetPosition - (Vector2)transform.position).normalized;
 
         // Update avoidance force only every AVOIDANCE_UPDATE_INTERVAL seconds
-        if (Time.time - lastAvoidanceUpdateTime >= AVOIDANCE_UPDATE_INTERVAL)
-        {
-            cachedAvoidanceForce = CalculateAvoidanceForce();
-            lastAvoidanceUpdateTime = Time.time;
-        }
+        // if (Time.time - lastAvoidanceUpdateTime >= AVOIDANCE_UPDATE_INTERVAL)
+        // {
+        //     cachedAvoidanceForce = CalculateAvoidanceForce();
+        //     lastAvoidanceUpdateTime = Time.time;
+        // }
 
         // Combine forces using cached avoidance force
-        Vector2 totalMoveForce = moveForce + cachedAvoidanceForce;
+        Vector2 totalMoveForce = moveForce;
 
         // Apply the force
         float adjustedSpeed = GetSpeed() * 0.066f;
