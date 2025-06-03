@@ -207,7 +207,7 @@ public class UnitManager : Singleton<UnitManager>
         Vector2 avoidanceDirection = leftDot > 0 ? perpendicularRight : perpendicularLeft;
 
         // Blend waypoint direction with avoidance direction
-        Vector2 blendedDirection = (targetDirection + avoidanceDirection * 0.7f).normalized;
+        Vector2 blendedDirection = (targetDirection + avoidanceDirection * 1.5f).normalized;
 
         return blendedDirection;
     }

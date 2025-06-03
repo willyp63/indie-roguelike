@@ -28,9 +28,6 @@ public class TreePlacer : MonoBehaviour
     private Vector2 areaSize = new Vector2(10f, 10f);
 
     [SerializeField]
-    private LayerMask openAreaLayer;
-
-    [SerializeField]
     private Color colorA = Color.green; // First color for random range
 
     [SerializeField]
@@ -148,10 +145,10 @@ public class TreePlacer : MonoBehaviour
                         transform
                     );
 
-                    tree.transform.localScale = new Vector3(Random.value < 0.5f ? -1f : 1f, 1f, 1f);
+                    // tree.transform.localScale = new Vector3(Random.value < 0.5f ? -1f : 1f, 1f, 1f);
 
                     // Apply random color between colorA and colorB
-                    Renderer treeRenderer = tree.GetComponent<Renderer>();
+                    Renderer treeRenderer = tree.transform.Find("Sprite")?.GetComponent<Renderer>();
                     if (treeRenderer != null)
                     {
                         Color randomColor = Color.Lerp(colorA, colorB, Random.value);

@@ -32,10 +32,10 @@ public class ManaBarUI : Singleton<ManaBarUI>
         float currentMana = ManaManager.Instance.CurrentMana;
         float maxMana = ManaManager.Instance.MaxMana;
 
-        // Update text display in "X/Y" format
+        // Update text display
         if (manaText != null)
         {
-            manaText.text = $"{Mathf.FloorToInt(currentMana)}/{Mathf.FloorToInt(maxMana)}";
+            manaText.text = $"{Mathf.FloorToInt(currentMana)}";
         }
 
         // Update mana bar fill by scaling

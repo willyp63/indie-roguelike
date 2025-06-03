@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7616590068785201712}
   - component: {fileID: 2670666882288672933}
   - component: {fileID: 740653979826185618}
+  - component: {fileID: 8356727595172500667}
   m_Layer: 0
   m_Name: Tent
   m_TagString: Untagged
@@ -142,6 +143,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isStatic: 1
   visionRange: 8
+--- !u!114 &8356727595172500667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4313026495086338216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19fdb8775f4c44468e6ab8fbc5289cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isStatic: 1
 --- !u!1 &7809605519727191320
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +166,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3722208829885392098}
   - component: {fileID: 5473549631321912352}
-  - component: {fileID: 4660762567268438901}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -227,16 +240,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4660762567268438901
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7809605519727191320}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19fdb8775f4c44468e6ab8fbc5289cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isStatic: 1

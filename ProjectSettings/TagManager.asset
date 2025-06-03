@@ -9,6 +9,7 @@ TagManager:
   - Neutral
   - Projectile
   - Wall
+  - Open Area
   layers:
   - Default
   - TransparentFX

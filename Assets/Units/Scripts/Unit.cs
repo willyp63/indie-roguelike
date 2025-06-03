@@ -132,6 +132,7 @@ public class Unit : MonoBehaviour
             return;
 
         // clear target if it's out of range or not visible
+        // TODO: use basic attack range instead of vision range
         if (targetUnit != null)
         {
             if (

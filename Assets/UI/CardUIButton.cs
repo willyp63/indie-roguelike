@@ -51,14 +51,14 @@ public class CardUIButton : MonoBehaviour, IPointerDownHandler
     {
         // Raise card position when active
         Vector3 position = transform.localPosition;
-        position.y = active ? 20f : 0f;
+        position.y = active ? 24f : 0f;
         transform.localPosition = position;
 
         // Add glow effect when active
         if (glowImage != null)
         {
             Color glowColor = glowImage.color;
-            glowColor.a = active ? 0.5f : 0f;
+            glowColor.a = active ? 1f : 0f;
             glowImage.color = glowColor;
         }
     }
