@@ -27,6 +27,11 @@ public class UnitManager : Singleton<UnitManager>
     [SerializeField]
     private float screenBuffer = 1f;
 
+    // Movement constants for GetMoveDirection method
+    private const float LOOK_AHEAD_DISTANCE = 0.66f;
+    private const float MOVEMENT_DIRECTION_THRESHOLD = 0.85f;
+    private const float AVOIDANCE_BLEND_STRENGTH = 0.7f;
+
     private float lastSpatialUpdate;
     private float lastTargetingUpdate;
 
@@ -154,20 +159,16 @@ public class UnitManager : Singleton<UnitManager>
             && viewportPoint.z > 0; // Must be in front of camera
     }
 
-    // TODO: adjust the magic numbers in this method
     public Vector2 GetMoveDirection(Unit unit, Vector2 targetDirection)
     {
         // If no waypoint direction, no movement needed
         if (targetDirection.magnitude < 0.1f)
             return targetDirection;
 
-        // Check for units ahead in the movement path
-        float lookAheadDistance = 0.5f;
-
         // Get nearby units for collision avoidance
         List<Unit> nearbyUnits = GetNearbyUnits(
             unit.Health(),
-            lookAheadDistance,
+            LOOK_AHEAD_DISTANCE,
             new List<UnitType> { unit.Health().Type() }
         );
 
@@ -186,7 +187,7 @@ public class UnitManager : Singleton<UnitManager>
             // Check if this unit is roughly in our movement direction
             float dotProduct = Vector2.Dot(toUnit.normalized, targetDirection.normalized);
 
-            if (dotProduct > 0.7f && distance < minDistance)
+            if (dotProduct > MOVEMENT_DIRECTION_THRESHOLD && distance < minDistance)
             {
                 blockingUnit = nearbyUnit;
                 minDistance = distance;
@@ -206,8 +207,45 @@ public class UnitManager : Singleton<UnitManager>
         float leftDot = Vector2.Dot(toBlockingUnit, perpendicularLeft);
         Vector2 avoidanceDirection = leftDot > 0 ? perpendicularRight : perpendicularLeft;
 
+        // check if there is a unit in the avoidance direction
+        bool isAvoidanceBlocked = false;
+        foreach (Unit nearbyUnit in nearbyUnits)
+        {
+            if (nearbyUnit == unit || nearbyUnit == blockingUnit)
+                continue;
+
+            Vector2 toUnit = nearbyUnit.transform.position - unit.transform.position;
+            float dotProduct = Vector2.Dot(toUnit.normalized, avoidanceDirection);
+
+            if (dotProduct > MOVEMENT_DIRECTION_THRESHOLD && toUnit.magnitude < LOOK_AHEAD_DISTANCE)
+            {
+                isAvoidanceBlocked = true;
+                break;
+            }
+        }
+
+        // check if there is a wall in the avoidance direction
+        if (
+            !isAvoidanceBlocked
+            && !HasLineOfSight(
+                unit,
+                unit.transform.position + (Vector3)avoidanceDirection * LOOK_AHEAD_DISTANCE
+            )
+        )
+        {
+            isAvoidanceBlocked = true;
+        }
+
+        // If avoidance direction is blocked, use the opposite perpendicular direction
+        if (isAvoidanceBlocked)
+        {
+            avoidanceDirection = leftDot > 0 ? perpendicularLeft : perpendicularRight;
+        }
+
         // Blend waypoint direction with avoidance direction
-        Vector2 blendedDirection = (targetDirection + avoidanceDirection * 1.5f).normalized;
+        Vector2 blendedDirection = (
+            targetDirection + avoidanceDirection * AVOIDANCE_BLEND_STRENGTH
+        ).normalized;
 
         return blendedDirection;
     }
