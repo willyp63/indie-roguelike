@@ -36,7 +36,7 @@ public class UnitManager : Singleton<UnitManager>
     private float lastTargetingUpdate;
 
     // Batch processing
-    private int unitsPerFrameForTargeting = 100; // Process 50 units per frame for targeting
+    private int unitsPerFrameForTargeting = 200;
     private int currentTargetingIndex = 0;
 
     void Update()
