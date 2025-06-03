@@ -59,13 +59,9 @@ public class CardInputHandler : Singleton<CardInputHandler>
     private void UpdatePreviewUnits()
     {
         Card selectedCard = DeckManager.Instance.GetHand()[selectedCardIndex];
-        Vector3 mouseWorldPos = GetMouseWorldPosition();
 
         // Get the positions where units would be spawned
-        List<Vector2> spawnPositions = UnitUtils.GetSpreadPositions(
-            mouseWorldPos,
-            selectedCard.unitCount
-        );
+        List<Vector2> spawnPositions = GetSpawnPositions(selectedCard);
 
         // Clear existing preview units if count changed
         if (previewUnits.Count != selectedCard.unitCount)
@@ -281,11 +277,16 @@ public class CardInputHandler : Singleton<CardInputHandler>
         ManaManager.Instance.SpendMana(cardToPlay.manaCost);
         DeckManager.Instance.CycleCard(cardIndex);
         UnitManager.Instance.SpawnUnits(
-            GetMouseWorldPosition(),
+            GetSpawnPositions(cardToPlay),
             cardToPlay.unitPrefab,
-            UnitType.Friend,
-            cardToPlay.unitCount
+            UnitType.Friend
         );
+    }
+
+    private List<Vector2> GetSpawnPositions(Card card)
+    {
+        float unitRadius = card.unitPrefab.GetComponent<CircleCollider2D>().radius;
+        return UnitUtils.GetSpreadPositions(GetMouseWorldPosition(), card.unitCount, unitRadius);
     }
 
     void OnDrawGizmosSelected()

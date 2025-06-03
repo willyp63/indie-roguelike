@@ -28,9 +28,9 @@ public class UnitManager : Singleton<UnitManager>
     private float screenBuffer = 1f;
 
     // Movement constants for GetMoveDirection method
-    private const float LOOK_AHEAD_DISTANCE = 0.66f;
-    private const float MOVEMENT_DIRECTION_THRESHOLD = 0.85f;
-    private const float AVOIDANCE_BLEND_STRENGTH = 0.7f;
+    private const float LOOK_AHEAD_DISTANCE = 0.5f;
+    private const float MOVEMENT_DIRECTION_THRESHOLD = 0.75f;
+    private const float AVOIDANCE_BLEND_STRENGTH = 0.85f;
 
     private float lastSpatialUpdate;
     private float lastTargetingUpdate;
@@ -82,9 +82,8 @@ public class UnitManager : Singleton<UnitManager>
         RemoveFromSpatialGrid(unit);
     }
 
-    public void SpawnUnits(Vector2 spawnPosition, Unit unitPrefab, UnitType unitType, int count)
+    public void SpawnUnits(List<Vector2> spawnPositions, Unit unitPrefab, UnitType unitType)
     {
-        List<Vector2> spawnPositions = UnitUtils.GetSpreadPositions(spawnPosition, count);
         string unitTypeName = unitType == UnitType.Friend ? "Friendly" : "Enemy";
 
         foreach (Vector2 pos in spawnPositions)

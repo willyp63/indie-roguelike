@@ -19,6 +19,8 @@ public enum Direction
 
 public static class UnitUtils
 {
+    private const float UNIT_SPACING_MULTIPLIER = 2.5f;
+
     public static bool IsWithinRange(Health health1, Health health2, float range)
     {
         float sqrDistance = (health1.transform.position - health2.transform.position).sqrMagnitude;
@@ -64,33 +66,68 @@ public static class UnitUtils
             || (attackerType != targetType);
     }
 
-    public static List<Vector2> GetSpreadPositions(
-        Vector2 center,
-        int count,
-        float radius = 1f,
-        bool flipX = false,
-        bool rotate90 = true
-    )
+    public static List<Vector2> GetSpreadPositions(Vector2 center, int count, float unitRadius)
     {
-        List<Vector2> positions = new();
+        List<Vector2> positions = new List<Vector2>();
 
         if (count <= 0)
             return positions;
 
+        // Single unit - place at center
         if (count == 1)
         {
             positions.Add(center);
             return positions;
         }
 
-        float angleStep = 360f / count;
-
-        for (int i = 0; i < count; i++)
+        // Two units - place side by side
+        if (count == 2)
         {
-            float angle = i * angleStep * Mathf.Deg2Rad + (rotate90 ? Mathf.PI / 2f : 0f);
-            float x = center.x + radius * Mathf.Cos(angle) * (flipX ? -1f : 1f);
-            float y = center.y + radius * Mathf.Sin(angle);
-            positions.Add(new Vector2(x, y));
+            float unitSpacing = unitRadius * UNIT_SPACING_MULTIPLIER; // Slight gap between units
+            positions.Add(center + Vector2.up * unitSpacing * 0.5f);
+            positions.Add(center + Vector2.down * unitSpacing * 0.5f);
+            return positions;
+        }
+
+        // Small groups (3-8 units) - use circular formation
+        if (count <= 8)
+        {
+            float radius = Mathf.Max(unitRadius * 2f, unitRadius * count * 0.5f);
+
+            for (int i = 0; i < count; i++)
+            {
+                float angle = (2f * Mathf.PI * i) / count - Mathf.PI / 2f; // Rotate by -90 degrees for y-axis symmetry
+                Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+                positions.Add(center + offset);
+            }
+            return positions;
+        }
+
+        // Large groups (9+ units) - use grid formation
+        int columns = Mathf.CeilToInt(Mathf.Sqrt(count));
+        int rows = Mathf.CeilToInt((float)count / columns);
+        float spacing = unitRadius * UNIT_SPACING_MULTIPLIER;
+
+        // Calculate grid offset to center the formation
+        Vector2 gridSize = new Vector2((columns - 1) * spacing, (rows - 1) * spacing);
+        Vector2 gridStart = center - gridSize * 0.5f;
+
+        int unitIndex = 0;
+        for (int row = 0; row < rows && unitIndex < count; row++)
+        {
+            // Calculate how many units will be in this row
+            int unitsInThisRow = Mathf.Min(columns, count - unitIndex);
+
+            // Calculate offset to center incomplete rows
+            float rowCenterOffset = (columns - unitsInThisRow) * spacing * 0.5f;
+
+            for (int col = 0; col < unitsInThisRow; col++)
+            {
+                Vector2 position =
+                    gridStart + new Vector2(col * spacing + rowCenterOffset, row * spacing);
+                positions.Add(position);
+                unitIndex++;
+            }
         }
 
         return positions;
