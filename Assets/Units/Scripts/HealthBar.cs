@@ -9,6 +9,9 @@ public class HealthBar : MonoBehaviour
     [SerializeField]
     private int offsetY = 24;
 
+    // Static reference to shared settings - loaded once and shared across all instances
+    private static HealthBarSettings sharedSettings;
+
     private readonly Color ENEMY_BACKGROUND_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.8f);
     private readonly Color ENEMY_FOREGROUND_COLOR = new Color(0.8f, 0.2f, 0.2f, 0.9f);
     private readonly Color FRIEND_BACKGROUND_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.8f);
@@ -18,23 +21,14 @@ public class HealthBar : MonoBehaviour
 
     private Health health;
     private Transform healthBarTransform;
-    private SpriteRenderer backgroundRenderer;
-    private SpriteRenderer foregroundRenderer;
+    private SpriteRenderer frameRenderer;
+    private SpriteRenderer unfilledRenderer;
+    private SpriteRenderer filledRenderer;
+    private SpriteRenderer dotFrameRenderer;
+    private SpriteRenderer dotFillRenderer;
     private Vector3 healthBarOffset;
 
-    // Health bar dimensions in pixels
-    private static readonly int HEALTH_BAR_WIDTH_PIXELS = 18;
-    private static readonly int HEALTH_BAR_HEIGHT_PIXELS = 2;
     private static readonly int PIXELS_PER_UNIT = 32;
-
-    // Calculated world dimensions
-    private static readonly float HEALTH_BAR_WIDTH_WORLD =
-        (float)HEALTH_BAR_WIDTH_PIXELS / PIXELS_PER_UNIT;
-
-    // Static sprites shared across all health bars for performance
-    private static Sprite backgroundSprite;
-    private static Sprite[] foregroundSprites = new Sprite[HEALTH_BAR_WIDTH_PIXELS + 1];
-    private static bool spritesCreated = false;
 
     void Start()
     {
@@ -45,6 +39,21 @@ public class HealthBar : MonoBehaviour
             return;
         }
 
+        // Load shared settings if not already loaded
+        if (sharedSettings == null)
+        {
+            sharedSettings = Resources.Load<HealthBarSettings>("HealthBarSettings");
+        }
+
+        // Validate settings
+        if (sharedSettings == null || !sharedSettings.IsValid())
+        {
+            Debug.LogError(
+                "HealthBar requires a valid HealthBarSettings asset in Resources folder. Create one using 'Assets > Create > Game > Health Bar Settings'"
+            );
+            return;
+        }
+
         CreateHealthBar();
 
         // Subscribe to health events
@@ -52,59 +61,8 @@ public class HealthBar : MonoBehaviour
         health.onHealed.AddListener(OnHealthChanged);
     }
 
-    static void CreateSharedSprites()
-    {
-        if (spritesCreated)
-            return; // Already created
-
-        // Create background sprite (full width)
-        backgroundSprite = CreatePixelPerfectSprite(
-            HEALTH_BAR_WIDTH_PIXELS,
-            HEALTH_BAR_HEIGHT_PIXELS
-        );
-
-        // Create foreground sprites for each possible width (0-16 pixels)
-        for (int width = 0; width <= HEALTH_BAR_WIDTH_PIXELS; width++)
-        {
-            foregroundSprites[width] =
-                width > 0 ? CreatePixelPerfectSprite(width, HEALTH_BAR_HEIGHT_PIXELS) : null;
-        }
-
-        spritesCreated = true;
-    }
-
-    static Sprite CreatePixelPerfectSprite(int widthPixels, int heightPixels)
-    {
-        Texture2D texture = new Texture2D(widthPixels, heightPixels, TextureFormat.RGBA32, false);
-        texture.filterMode = FilterMode.Point; // Critical for pixel perfect
-        texture.name = $"HealthBar_{widthPixels}x{heightPixels}";
-
-        // Fill with white pixels
-        Color[] pixels = new Color[widthPixels * heightPixels];
-        for (int i = 0; i < pixels.Length; i++)
-        {
-            pixels[i] = Color.white;
-        }
-
-        texture.SetPixels(pixels);
-        texture.Apply();
-
-        // Create sprite with exact pixel dimensions
-        return Sprite.Create(
-            texture,
-            new Rect(0, 0, widthPixels, heightPixels),
-            new Vector2(0.5f, 0.5f), // Pivot at center
-            PIXELS_PER_UNIT, // This matches your art's PPU
-            0,
-            SpriteMeshType.FullRect
-        );
-    }
-
     void CreateHealthBar()
     {
-        // Ensure shared sprites are created (only happens once across all instances)
-        CreateSharedSprites();
-
         healthBarOffset = new Vector3(
             0f,
             offsetY * health.ScaleFactor() / (float)PIXELS_PER_UNIT,
@@ -116,21 +74,45 @@ public class HealthBar : MonoBehaviour
         healthBarObj.transform.SetParent(transform);
         healthBarTransform = healthBarObj.transform;
 
-        // Create background sprite
-        GameObject backgroundObj = new GameObject("Background");
-        backgroundObj.transform.SetParent(healthBarTransform);
-        backgroundRenderer = backgroundObj.AddComponent<SpriteRenderer>();
-        backgroundRenderer.sprite = backgroundSprite;
-        backgroundRenderer.sortingLayerName = "Units UI";
-        backgroundRenderer.sortingOrder = 1;
+        // Create frame sprite (outermost layer)
+        GameObject frameObj = new GameObject("Frame");
+        frameObj.transform.SetParent(healthBarTransform);
+        frameRenderer = frameObj.AddComponent<SpriteRenderer>();
+        frameRenderer.sprite = sharedSettings.FrameSprite;
+        frameRenderer.sortingLayerName = "Units UI";
+        frameRenderer.sortingOrder = 3; // Highest layer
 
-        // Create foreground sprite
-        GameObject foregroundObj = new GameObject("Foreground");
-        foregroundObj.transform.SetParent(healthBarTransform);
-        foregroundRenderer = foregroundObj.AddComponent<SpriteRenderer>();
-        foregroundRenderer.sprite = foregroundSprites[HEALTH_BAR_WIDTH_PIXELS]; // Start with full health
-        foregroundRenderer.sortingLayerName = "Units UI";
-        foregroundRenderer.sortingOrder = 2;
+        // Create unfilled background sprite
+        GameObject unfilledObj = new GameObject("Unfilled");
+        unfilledObj.transform.SetParent(healthBarTransform);
+        unfilledRenderer = unfilledObj.AddComponent<SpriteRenderer>();
+        unfilledRenderer.sprite = sharedSettings.UnfilledBarSprite;
+        unfilledRenderer.sortingLayerName = "Units UI";
+        unfilledRenderer.sortingOrder = 1; // Bottom layer
+
+        // Create filled foreground sprite
+        GameObject filledObj = new GameObject("Filled");
+        filledObj.transform.SetParent(healthBarTransform);
+        filledRenderer = filledObj.AddComponent<SpriteRenderer>();
+        filledRenderer.sprite = sharedSettings.FilledBarSprite;
+        filledRenderer.sortingLayerName = "Units UI";
+        filledRenderer.sortingOrder = 2; // Middle layer
+
+        // Create dot frame sprite for team indicator
+        GameObject dotFrameObj = new GameObject("DotFrame");
+        dotFrameObj.transform.SetParent(healthBarTransform);
+        dotFrameRenderer = dotFrameObj.AddComponent<SpriteRenderer>();
+        dotFrameRenderer.sprite = sharedSettings.DotFrameSprite;
+        dotFrameRenderer.sortingLayerName = "Units UI";
+        dotFrameRenderer.sortingOrder = 5; // Higher than health bar
+
+        // Create dot fill sprite for team indicator
+        GameObject dotFillObj = new GameObject("DotFill");
+        dotFillObj.transform.SetParent(healthBarTransform);
+        dotFillRenderer = dotFillObj.AddComponent<SpriteRenderer>();
+        dotFillRenderer.sprite = sharedSettings.DotFillSprite;
+        dotFillRenderer.sortingLayerName = "Units UI";
+        dotFillRenderer.sortingOrder = 4; // Between dot frame and health bar
 
         // Set colors based on unit type
         SetHealthBarColors();
@@ -146,20 +128,27 @@ public class HealthBar : MonoBehaviour
 
     void SetHealthBarColors()
     {
+        // Frame stays neutral/white to preserve the pixel art
+        frameRenderer.color = Color.white;
+        dotFrameRenderer.color = Color.white;
+
         if (health.Type() == UnitType.Enemy)
         {
-            backgroundRenderer.color = ENEMY_BACKGROUND_COLOR;
-            foregroundRenderer.color = ENEMY_FOREGROUND_COLOR;
+            unfilledRenderer.color = ENEMY_BACKGROUND_COLOR;
+            filledRenderer.color = ENEMY_FOREGROUND_COLOR;
+            dotFillRenderer.color = ENEMY_FOREGROUND_COLOR;
         }
         else if (health.Type() == UnitType.Friend)
         {
-            backgroundRenderer.color = FRIEND_BACKGROUND_COLOR;
-            foregroundRenderer.color = FRIEND_FOREGROUND_COLOR;
+            unfilledRenderer.color = FRIEND_BACKGROUND_COLOR;
+            filledRenderer.color = FRIEND_FOREGROUND_COLOR;
+            dotFillRenderer.color = FRIEND_FOREGROUND_COLOR;
         }
         else // Neutral
         {
-            backgroundRenderer.color = NEUTRAL_BACKGROUND_COLOR;
-            foregroundRenderer.color = NEUTRAL_FOREGROUND_COLOR;
+            unfilledRenderer.color = NEUTRAL_BACKGROUND_COLOR;
+            filledRenderer.color = NEUTRAL_FOREGROUND_COLOR;
+            dotFillRenderer.color = NEUTRAL_FOREGROUND_COLOR;
         }
     }
 
@@ -197,32 +186,53 @@ public class HealthBar : MonoBehaviour
 
     void UpdateHealthBar()
     {
-        if (health == null || foregroundRenderer == null)
+        if (health == null || filledRenderer == null)
             return;
 
         float healthPercentage = (float)health.CurrentHealth() / health.MaxHealth();
         healthPercentage = Mathf.Clamp01(healthPercentage);
 
-        // Calculate the width in pixels for the foreground bar
-        int foregroundWidthPixels = Mathf.RoundToInt(HEALTH_BAR_WIDTH_PIXELS * healthPercentage);
+        bool isAtFullHealth = health.CurrentHealth() >= health.MaxHealth();
+        bool isAlive = !health.IsDead();
 
-        // Ensure we have at least 1 pixel width if there's any health
-        if (healthPercentage > 0 && foregroundWidthPixels == 0)
-            foregroundWidthPixels = 1;
-
-        // Use pre-created sprite
-        foregroundRenderer.sprite = foregroundSprites[foregroundWidthPixels];
-
-        // Position the foreground bar to be left-aligned with the background
-        if (foregroundWidthPixels > 0)
+        if (isAtFullHealth && isAlive)
         {
-            float offsetX =
-                -(HEALTH_BAR_WIDTH_WORLD - (float)foregroundWidthPixels / PIXELS_PER_UNIT) * 0.5f;
-            foregroundRenderer.transform.localPosition = new Vector3(offsetX, 0, 0);
-        }
+            // Show team indicator dot, hide health bar components
+            frameRenderer.gameObject.SetActive(false);
+            unfilledRenderer.gameObject.SetActive(false);
+            filledRenderer.gameObject.SetActive(false);
+            dotFrameRenderer.gameObject.SetActive(true);
+            dotFillRenderer.gameObject.SetActive(true);
 
-        // Hide health bar if dead
-        healthBarTransform.gameObject.SetActive(!health.IsDead());
+            // Show the health bar container
+            healthBarTransform.gameObject.SetActive(true);
+        }
+        else if (isAlive && health.CurrentHealth() < health.MaxHealth())
+        {
+            // Show health bar, hide team indicator dot
+            frameRenderer.gameObject.SetActive(true);
+            unfilledRenderer.gameObject.SetActive(true);
+            filledRenderer.gameObject.SetActive(true);
+            dotFrameRenderer.gameObject.SetActive(false);
+            dotFillRenderer.gameObject.SetActive(false);
+
+            // Scale the filled bar horizontally based on health percentage
+            // This assumes your sprite is designed to be scaled
+            filledRenderer.transform.localScale = new Vector3(healthPercentage, 1f, 1f);
+
+            // Position the filled bar to align with the left side of the frame
+            // You may need to adjust this offset based on your sprite's pivot and dimensions
+            float offsetX = -(1f - healthPercentage) * filledRenderer.sprite.bounds.size.x * 0.5f;
+            filledRenderer.transform.localPosition = new Vector3(offsetX, 0, 0);
+
+            // Show the health bar container
+            healthBarTransform.gameObject.SetActive(true);
+        }
+        else
+        {
+            // Unit is dead, hide everything
+            healthBarTransform.gameObject.SetActive(false);
+        }
     }
 
     void OnDestroy()

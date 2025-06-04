@@ -1454,8 +1454,8 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: -0.5
-    y: -0.5
+    x: -0.6666667
+    y: -0.5555555
     width: 2
     height: 2
   near clip plane: 0.3
@@ -1888,8 +1888,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274dcc9e703802c4796a2b4bae9e1898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: 3
-  offsetY: 32
+  scale: 4
+  offsetY: 16
 --- !u!114 &595186801
 MonoBehaviour:
   m_ObjectHideFlags: 0

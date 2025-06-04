@@ -17,4 +17,4 @@ MonoBehaviour:
   cardArt: {fileID: 21300000, guid: f5ecdcf5415393b4c8d55521b2026fd9, type: 3}
   manaCost: 2
   unitCount: 2
-  unitPrefab: {fileID: 5013635817664125963, guid: 95747eb5b86feeb438c22a91ea831f8f, type: 3}
+  unitPrefab: {fileID: 8318828181691542575, guid: 95747eb5b86feeb438c22a91ea831f8f, type: 3}
