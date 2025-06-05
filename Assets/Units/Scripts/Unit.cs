@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    enum UnitState
+    public enum UnitState
     {
         Idle,
         Pursuing,
@@ -52,6 +52,18 @@ public class Unit : MonoBehaviour
         return movementBehaviour;
     }
 
+    private Rigidbody2D rb;
+
+    public Rigidbody2D Rigidbody()
+    {
+        return rb;
+    }
+
+    public UnitState State()
+    {
+        return state;
+    }
+
     private Animator animator;
 
     private Unit targetUnit;
@@ -69,6 +81,7 @@ public class Unit : MonoBehaviour
         attackBehaviours = GetComponents<AttackBehaviour>();
         movementBehaviour = GetComponent<MovementBehaviour>();
         animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
 
         health.onDeath.AddListener(OnDeath);
 

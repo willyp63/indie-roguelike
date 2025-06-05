@@ -6402,7 +6402,6 @@ MonoBehaviour:
     power: 36
     timeBeforeFirstSpawn: 300
   weightIncreasePerSkip: 2
-  maxNumAvailableWaves: 999
 --- !u!4 &1692558840
 Transform:
   m_ObjectHideFlags: 0

@@ -28,9 +28,10 @@ public class UnitManager : Singleton<UnitManager>
     private float screenBuffer = 1f;
 
     // Movement constants for GetMoveDirection method
-    private const float LOOK_AHEAD_DISTANCE = 0.5f;
-    private const float MOVEMENT_DIRECTION_THRESHOLD = 0.75f;
-    private const float AVOIDANCE_BLEND_STRENGTH = 0.85f;
+    private const float LOOK_AHEAD_DISTANCE = 1.0f;
+    private const float MOVEMENT_DIRECTION_THRESHOLD = 0.85f;
+    private const float AVOIDANCE_BLEND_STRENGTH = 1.5f;
+    private const float AVOIDANCE_SPEED_THRESHOLD = 0.95f;
 
     private float lastSpatialUpdate;
     private float lastTargetingUpdate;
@@ -174,6 +175,7 @@ public class UnitManager : Singleton<UnitManager>
         // Check if there's a unit directly ahead
         Unit blockingUnit = null;
         float minDistance = float.MaxValue;
+        float currentUnitSpeed = unit.Rigidbody().velocity.magnitude;
 
         foreach (Unit nearbyUnit in nearbyUnits)
         {
@@ -188,6 +190,16 @@ public class UnitManager : Singleton<UnitManager>
 
             if (dotProduct > MOVEMENT_DIRECTION_THRESHOLD && distance < minDistance)
             {
+                // Only consider as blocking if the nearby unit is moving slower than 90% of this unit's speed
+                float nearbyUnitSpeed = nearbyUnit.Rigidbody().velocity.magnitude;
+                if (
+                    nearbyUnit.State() == Unit.UnitState.Pursuing
+                    && nearbyUnitSpeed > currentUnitSpeed * AVOIDANCE_SPEED_THRESHOLD
+                )
+                {
+                    continue;
+                }
+
                 blockingUnit = nearbyUnit;
                 minDistance = distance;
             }
