@@ -487,7 +487,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStatic: 0
-  visionRange: 9
+  visionRange: 11
 --- !u!114 &423198201627884177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -503,7 +503,7 @@ MonoBehaviour:
   attackDamage: 32
   attackCooldown: 0
   attackDuration: 2.5
-  attackRange: 9
+  attackRange: 11
   attackDelay: 1
   animationTrigger: Attack
   pushForce: 10

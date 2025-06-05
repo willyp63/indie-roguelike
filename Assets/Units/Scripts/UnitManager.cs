@@ -29,9 +29,10 @@ public class UnitManager : Singleton<UnitManager>
 
     // Movement constants for GetMoveDirection method
     private const float LOOK_AHEAD_DISTANCE = 1.0f;
-    private const float MOVEMENT_DIRECTION_THRESHOLD = 0.85f;
-    private const float AVOIDANCE_BLEND_STRENGTH = 1.5f;
-    private const float AVOIDANCE_SPEED_THRESHOLD = 0.95f;
+    private const float MOVEMENT_DIRECTION_THRESHOLD_MAX = 0.85f;
+    private const float MOVEMENT_DIRECTION_THRESHOLD_MIN = 0.5f;
+    private const float AVOIDANCE_BLEND_STRENGTH = 1.75f;
+    private const float AVOIDANCE_SPEED_THRESHOLD = 0.9f;
 
     private float lastSpatialUpdate;
     private float lastTargetingUpdate;
@@ -188,7 +189,21 @@ public class UnitManager : Singleton<UnitManager>
             // Check if this unit is roughly in our movement direction
             float dotProduct = Vector2.Dot(toUnit.normalized, targetDirection.normalized);
 
-            if (dotProduct > MOVEMENT_DIRECTION_THRESHOLD && distance < minDistance)
+            float nearbyUnitRadius = nearbyUnit.Health().HitBoxRadius();
+
+            // Calculate dynamic threshold based on unit size and distance
+            // Larger units or closer units get lower thresholds (easier to block)
+            float blockingAngle = Mathf.Atan(nearbyUnitRadius / Mathf.Max(distance, 0.1f));
+            float dynamicThreshold = Mathf.Cos(blockingAngle);
+
+            // Clamp the threshold to reasonable bounds
+            dynamicThreshold = Mathf.Clamp(
+                dynamicThreshold,
+                MOVEMENT_DIRECTION_THRESHOLD_MIN,
+                MOVEMENT_DIRECTION_THRESHOLD_MAX
+            );
+
+            if (dotProduct > dynamicThreshold && distance < minDistance)
             {
                 // Only consider as blocking if the nearby unit is moving slower than 90% of this unit's speed
                 float nearbyUnitSpeed = nearbyUnit.Rigidbody().velocity.magnitude;
@@ -228,7 +243,18 @@ public class UnitManager : Singleton<UnitManager>
             Vector2 toUnit = nearbyUnit.transform.position - unit.transform.position;
             float dotProduct = Vector2.Dot(toUnit.normalized, avoidanceDirection);
 
-            if (dotProduct > MOVEMENT_DIRECTION_THRESHOLD && toUnit.magnitude < LOOK_AHEAD_DISTANCE)
+            // Calculate dynamic threshold for avoidance direction as well
+            float nearbyUnitRadius = nearbyUnit.Health().HitBoxRadius();
+            float distance = toUnit.magnitude;
+            float blockingAngle = Mathf.Atan(nearbyUnitRadius / Mathf.Max(distance, 0.1f));
+            float dynamicThreshold = Mathf.Cos(blockingAngle);
+            dynamicThreshold = Mathf.Clamp(
+                dynamicThreshold,
+                MOVEMENT_DIRECTION_THRESHOLD_MIN,
+                MOVEMENT_DIRECTION_THRESHOLD_MAX
+            );
+
+            if (dotProduct > dynamicThreshold && distance < LOOK_AHEAD_DISTANCE)
             {
                 isAvoidanceBlocked = true;
                 break;
