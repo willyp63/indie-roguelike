@@ -1454,10 +1454,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: -0.6666667
-    y: -0.5555555
-    width: 2
-    height: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 34
@@ -6319,21 +6319,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17979fa108260a44a8fc752ca0dae41d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitPrefabs:
-  - unitPrefab: {fileID: 3580501831942194810, guid: 91f83b5d9f8b2ba469b7537a3331ee6f, type: 3}
-    weight: 1.33
-  - unitPrefab: {fileID: 6730860801600111186, guid: 65278457ed39c184c8c7979a50892b04, type: 3}
-    weight: 1.33
-  - unitPrefab: {fileID: 744390261529238930, guid: dadce18e798e59d4b90f9aa357ea9cd7, type: 3}
-    weight: 1.02
-  - unitPrefab: {fileID: 1860159409765746910, guid: 3694726fc9bd49b40b3a0a6f89c6e8be, type: 3}
-    weight: 1.02
-  - unitPrefab: {fileID: 819670602864276031, guid: 89d650514a644dd4699aecad01c9566d, type: 3}
-    weight: 0.78
-  - unitPrefab: {fileID: 3580501831942194810, guid: 1ca6f70a611db804d954a2c21cae129a, type: 3}
-    weight: 0.35
-  - unitPrefab: {fileID: 4487921303902649061, guid: 3d4a1dfc9a0bdc74fb224ec6297da9de, type: 3}
-    weight: 0.35
   spawnBounds:
   - name: Top Left Zone
     center: {x: -36, y: 9.5}
@@ -6347,11 +6332,77 @@ MonoBehaviour:
   - name: Top Right Zone
     center: {x: -36, y: -6.5}
     size: {x: 8, y: 8}
-  spawnInterval: 1
-  initialDelay: 0
-  spawnOnStart: 1
-  maxActiveUnits: 999
-  respectMaxUnits: 0
+  unitWaves:
+  - unitPrefab: {fileID: 6730860801600111186, guid: 65278457ed39c184c8c7979a50892b04, type: 3}
+    count: 4
+    power: 8
+    timeBeforeFirstSpawn: 0
+  - unitPrefab: {fileID: 3580501831942194810, guid: 91f83b5d9f8b2ba469b7537a3331ee6f, type: 3}
+    count: 3
+    power: 9
+    timeBeforeFirstSpawn: 0
+  - unitPrefab: {fileID: 744390261529238930, guid: dadce18e798e59d4b90f9aa357ea9cd7, type: 3}
+    count: 2
+    power: 8
+    timeBeforeFirstSpawn: 0
+  - unitPrefab: {fileID: 6730860801600111186, guid: 65278457ed39c184c8c7979a50892b04, type: 3}
+    count: 8
+    power: 16
+    timeBeforeFirstSpawn: 60
+  - unitPrefab: {fileID: 3580501831942194810, guid: 91f83b5d9f8b2ba469b7537a3331ee6f, type: 3}
+    count: 6
+    power: 18
+    timeBeforeFirstSpawn: 60
+  - unitPrefab: {fileID: 744390261529238930, guid: dadce18e798e59d4b90f9aa357ea9cd7, type: 3}
+    count: 4
+    power: 16
+    timeBeforeFirstSpawn: 60
+  - unitPrefab: {fileID: 3580501831942194810, guid: 1ca6f70a611db804d954a2c21cae129a, type: 3}
+    count: 1
+    power: 8
+    timeBeforeFirstSpawn: 120
+  - unitPrefab: {fileID: 1860159409765746910, guid: 3694726fc9bd49b40b3a0a6f89c6e8be, type: 3}
+    count: 3
+    power: 18
+    timeBeforeFirstSpawn: 120
+  - unitPrefab: {fileID: 819670602864276031, guid: 89d650514a644dd4699aecad01c9566d, type: 3}
+    count: 1
+    power: 9
+    timeBeforeFirstSpawn: 120
+  - unitPrefab: {fileID: 2431124736639993226, guid: 10067031ec51de749af100aee20ab322, type: 3}
+    count: 1
+    power: 9
+    timeBeforeFirstSpawn: 180
+  - unitPrefab: {fileID: 3580501831942194810, guid: 91f83b5d9f8b2ba469b7537a3331ee6f, type: 3}
+    count: 9
+    power: 27
+    timeBeforeFirstSpawn: 180
+  - unitPrefab: {fileID: 6730860801600111186, guid: 65278457ed39c184c8c7979a50892b04, type: 3}
+    count: 9
+    power: 18
+    timeBeforeFirstSpawn: 180
+  - unitPrefab: {fileID: 819670602864276031, guid: 89d650514a644dd4699aecad01c9566d, type: 3}
+    count: 2
+    power: 18
+    timeBeforeFirstSpawn: 240
+  - unitPrefab: {fileID: 744390261529238930, guid: dadce18e798e59d4b90f9aa357ea9cd7, type: 3}
+    count: 9
+    power: 36
+    timeBeforeFirstSpawn: 240
+  - unitPrefab: {fileID: 4487921303902649061, guid: 3d4a1dfc9a0bdc74fb224ec6297da9de, type: 3}
+    count: 1
+    power: 15
+    timeBeforeFirstSpawn: 300
+  - unitPrefab: {fileID: 3580501831942194810, guid: 1ca6f70a611db804d954a2c21cae129a, type: 3}
+    count: 2
+    power: 16
+    timeBeforeFirstSpawn: 300
+  - unitPrefab: {fileID: 1860159409765746910, guid: 3694726fc9bd49b40b3a0a6f89c6e8be, type: 3}
+    count: 6
+    power: 36
+    timeBeforeFirstSpawn: 300
+  weightIncreasePerSkip: 2
+  maxNumAvailableWaves: 999
 --- !u!4 &1692558840
 Transform:
   m_ObjectHideFlags: 0
