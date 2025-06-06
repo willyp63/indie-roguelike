@@ -8240,8 +8240,8 @@ MonoBehaviour:
   handSize: 4
   initialDeck:
   - {fileID: 11400000, guid: de45a02fa6f212f488da1e5c1c4e4e22, type: 2}
-  - {fileID: 11400000, guid: de45a02fa6f212f488da1e5c1c4e4e22, type: 2}
-  - {fileID: 11400000, guid: de45a02fa6f212f488da1e5c1c4e4e22, type: 2}
+  - {fileID: 11400000, guid: 58848c398b0bf8148ba3c040296c8406, type: 2}
+  - {fileID: 11400000, guid: 58848c398b0bf8148ba3c040296c8406, type: 2}
   - {fileID: 11400000, guid: de45a02fa6f212f488da1e5c1c4e4e22, type: 2}
   - {fileID: 11400000, guid: 0ecdda843b28ab249a5697e01887f0a7, type: 2}
   - {fileID: 11400000, guid: ed6477b074dad56458d62fc01720a28c, type: 2}
