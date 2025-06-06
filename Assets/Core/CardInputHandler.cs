@@ -19,12 +19,14 @@ public class CardInputHandler : Singleton<CardInputHandler>
 
     private Camera playerCamera;
 
-    private static readonly Color INVALID_COLOR = new Color(1f, 0.5f, 0.5f, 0.5f);
-    private static readonly Color VALID_COLOR = new Color(1f, 1f, 1f, 0.5f);
+    private static readonly Color INVALID_COLOR = new Color(1f, 0.5f, 0.5f, 0.75f);
+    private static readonly Color VALID_COLOR = new Color(1f, 1f, 1f, 0.75f);
 
     // Preview unit system
-    private List<GameObject> previewUnits = new List<GameObject>();
+    [SerializeField]
     private Material previewMaterial;
+
+    private List<GameObject> previewUnits = new List<GameObject>();
 
     // Spell preview system
     private GameObject spellPreviewObject;
@@ -44,16 +46,7 @@ public class CardInputHandler : Singleton<CardInputHandler>
 
         CardsUI.Instance.onCardButtonClicked.AddListener(OnCardButtonClicked);
 
-        // Create preview material and spell preview circle
-        CreatePreviewMaterial();
         CreateSpellPreviewCircle();
-    }
-
-    private void CreatePreviewMaterial()
-    {
-        // Create a material for preview units (white and transparent)
-        previewMaterial = new Material(Shader.Find("Sprites/Default"));
-        previewMaterial.color = new Color(1f, 1f, 1f, 0.5f); // White and semi-transparent
     }
 
     private void CreateSpellPreviewCircle()
@@ -105,6 +98,7 @@ public class CardInputHandler : Singleton<CardInputHandler>
         );
     }
 
+    // TODO: Use texture asset instead of creating it every time
     private Texture2D CreateCircleTexture(int size, int borderThickness)
     {
         Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
@@ -227,14 +221,8 @@ public class CardInputHandler : Singleton<CardInputHandler>
             bool hasEnoughMana = ManaManager.Instance.HasEnoughMana(selectedCard.manaCost);
             bool isValidPosition = IsValidTargetPosition(selectedCard);
 
-            SpriteRenderer[] spriteRenderers = previewUnits[i]
-                .GetComponentsInChildren<SpriteRenderer>();
             Color previewColor = (hasEnoughMana && isValidPosition) ? VALID_COLOR : INVALID_COLOR;
-
-            foreach (SpriteRenderer sr in spriteRenderers)
-            {
-                sr.color = previewColor;
-            }
+            previewMaterial.color = previewColor;
         }
     }
 
@@ -312,6 +300,10 @@ public class CardInputHandler : Singleton<CardInputHandler>
         if (healthScript != null)
             healthScript.enabled = false;
 
+        HealthBar healthBarScript = previewUnit.GetComponent<HealthBar>();
+        if (healthBarScript != null)
+            healthBarScript.enabled = false;
+
         // Disable animator to prevent animations
         Animator animator = previewUnit.GetComponent<Animator>();
         if (animator != null)
@@ -336,7 +328,6 @@ public class CardInputHandler : Singleton<CardInputHandler>
             {
                 sr.material = previewMaterial;
             }
-            sr.color = new Color(1f, 1f, 1f, 0.5f); // White and semi-transparent
         }
     }
 
@@ -534,12 +525,6 @@ public class CardInputHandler : Singleton<CardInputHandler>
 
         // Clean up preview units when the object is destroyed
         ClearPreviewUnits();
-
-        // Clean up the preview material
-        if (previewMaterial != null)
-        {
-            Destroy(previewMaterial);
-        }
 
         // Clean up the circle texture
         Destroy(circleTexture1x);

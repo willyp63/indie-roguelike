@@ -16,6 +16,6 @@ MonoBehaviour:
   description: Basic melee unit
   cardArt: {fileID: -1370150865, guid: 2c0f2f116a7cccb40831332cee522a44, type: 3}
   manaCost: 1
-  unitCount: 1
+  unitCount: 5
   unitPrefab: {fileID: 819670602864276031, guid: 89d650514a644dd4699aecad01c9566d, type: 3}
   spellPrefab: {fileID: 0}
