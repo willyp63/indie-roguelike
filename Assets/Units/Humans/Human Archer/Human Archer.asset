@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b88e185d095854842a00f07b9010aebd, type: 3}
-  m_Name: Orc Warrior
+  m_Name: Human Archer
   m_EditorClassIdentifier: 
-  cardName: Orc Warrior
-  description: Basic melee unit
-  cardArt: {fileID: -1370150865, guid: 2c0f2f116a7cccb40831332cee522a44, type: 3}
-  manaCost: 1
-  unitCount: 5
-  unitPrefab: {fileID: 819670602864276031, guid: 89d650514a644dd4699aecad01c9566d, type: 3}
+  cardName: Human Archers
+  description: Weak ranged unit
+  cardArt: {fileID: 699512835, guid: 555a52d675d173f4192aadc34959fecb, type: 3}
+  manaCost: 3
+  unitCount: 4
+  unitPrefab: {fileID: 1860159409765746910, guid: 0021c7ca3aa3eeb479a05e18490aaf41, type: 3}
   spellPrefab: {fileID: 0}
