@@ -160,16 +160,18 @@ public class UnitManager : Singleton<UnitManager>
             && viewportPoint.z > 0; // Must be in front of camera
     }
 
-    public Vector2 GetMoveDirection(Unit unit, Vector2 targetDirection)
+    public Vector2 GetMoveDirection(Unit unit, Vector2 targetDirection, float targetDistance)
     {
         // If no waypoint direction, no movement needed
         if (targetDirection.magnitude < 0.1f)
             return targetDirection;
 
+        float lookAheadDistance = Mathf.Min(LOOK_AHEAD_DISTANCE, targetDistance);
+
         // Get nearby units for collision avoidance
         List<Unit> nearbyUnits = GetNearbyUnits(
             unit.Health(),
-            LOOK_AHEAD_DISTANCE,
+            lookAheadDistance,
             new List<UnitType> { unit.Health().Type() }
         );
 
@@ -254,7 +256,7 @@ public class UnitManager : Singleton<UnitManager>
                 MOVEMENT_DIRECTION_THRESHOLD_MAX
             );
 
-            if (dotProduct > dynamicThreshold && distance < LOOK_AHEAD_DISTANCE)
+            if (dotProduct > dynamicThreshold)
             {
                 isAvoidanceBlocked = true;
                 break;
@@ -289,15 +291,28 @@ public class UnitManager : Singleton<UnitManager>
 
     public List<Unit> GetNearbyUnits(Health health, float radius, List<UnitType> includeTypes)
     {
+        return GetNearbyUnits(
+            health.transform.position,
+            radius + health.HitBoxRadius(),
+            includeTypes
+        );
+    }
+
+    public List<Unit> GetNearbyUnits(
+        Vector2 targetPosition,
+        float radius,
+        List<UnitType> includeTypes
+    )
+    {
         List<Unit> nearbyUnits = new List<Unit>();
 
         // If the source health is off-screen, return no units
-        if (!IsOnScreen(health.transform.position))
+        if (!IsOnScreen(targetPosition))
         {
             return nearbyUnits; // Return empty list
         }
 
-        Vector2Int centerGrid = WorldToGrid(health.transform.position);
+        Vector2Int centerGrid = WorldToGrid(targetPosition);
 
         // Check surrounding grid cells
         int cellRadius = Mathf.CeilToInt(radius / gridCellSize) + 1;
@@ -316,7 +331,7 @@ public class UnitManager : Singleton<UnitManager>
                             unit != null
                             && !unit.Health().IsDead()
                             && includeTypes.Contains(unit.Health().Type())
-                            && UnitUtils.IsWithinRange(health, unit.Health(), radius)
+                            && UnitUtils.IsWithinRange(targetPosition, unit.Health(), radius)
                             && IsOnScreen(unit.transform.position) // Only include units that are on screen
                         )
                         {

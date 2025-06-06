@@ -10,15 +10,33 @@ public class CardInputHandler : Singleton<CardInputHandler>
     private KeyCode[] cardKeys = { KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R };
 
     [SerializeField]
-    private Bounds playableBounds;
+    private Bounds playableUnitBounds;
+
+    [SerializeField]
+    private Bounds playableSpellBounds;
 
     private int selectedCardIndex = -1;
 
     private Camera playerCamera;
 
+    private static readonly Color INVALID_COLOR = new Color(1f, 0.5f, 0.5f, 0.5f);
+    private static readonly Color VALID_COLOR = new Color(1f, 1f, 1f, 0.5f);
+
     // Preview unit system
     private List<GameObject> previewUnits = new List<GameObject>();
     private Material previewMaterial;
+
+    // Spell preview system
+    private GameObject spellPreviewObject;
+    private SpriteRenderer spellPreviewSprite;
+    private Sprite spellPreviewCircle1x;
+    private Sprite spellPreviewCircle2x;
+    private Sprite spellPreviewCircle3x;
+    private Texture2D circleTexture1x;
+    private Texture2D circleTexture2x;
+    private Texture2D circleTexture3x;
+
+    private const float PIXELS_PER_UNIT = 32f;
 
     private void Start()
     {
@@ -26,8 +44,9 @@ public class CardInputHandler : Singleton<CardInputHandler>
 
         CardsUI.Instance.onCardButtonClicked.AddListener(OnCardButtonClicked);
 
-        // Create preview material
+        // Create preview material and spell preview circle
         CreatePreviewMaterial();
+        CreateSpellPreviewCircle();
     }
 
     private void CreatePreviewMaterial()
@@ -35,6 +54,112 @@ public class CardInputHandler : Singleton<CardInputHandler>
         // Create a material for preview units (white and transparent)
         previewMaterial = new Material(Shader.Find("Sprites/Default"));
         previewMaterial.color = new Color(1f, 1f, 1f, 0.5f); // White and semi-transparent
+    }
+
+    private void CreateSpellPreviewCircle()
+    {
+        // Create the circle textures
+        circleTexture1x = CreateCircleTexture(256, 12);
+        circleTexture2x = CreateCircleTexture(256, 8);
+        circleTexture3x = CreateCircleTexture(256, 4);
+
+        // Create sprites from textures
+        spellPreviewCircle1x = CreateCircleSprite(circleTexture1x);
+        spellPreviewCircle2x = CreateCircleSprite(circleTexture2x);
+        spellPreviewCircle3x = CreateCircleSprite(circleTexture3x);
+
+        // Create GameObject for spell preview
+        spellPreviewObject = new GameObject("SpellPreview");
+        spellPreviewSprite = spellPreviewObject.AddComponent<SpriteRenderer>();
+        spellPreviewSprite.sortingLayerName = "Background";
+        spellPreviewSprite.sortingOrder = 999;
+        UpdateSpellPreviewCircle(0);
+
+        // Start with preview disabled
+        spellPreviewObject.SetActive(false);
+    }
+
+    private void UpdateSpellPreviewCircle(float spellRadius)
+    {
+        if (spellRadius < 1f)
+        {
+            spellPreviewSprite.sprite = spellPreviewCircle1x;
+        }
+        else if (spellRadius < 2f)
+        {
+            spellPreviewSprite.sprite = spellPreviewCircle2x;
+        }
+        else
+        {
+            spellPreviewSprite.sprite = spellPreviewCircle3x;
+        }
+    }
+
+    private Sprite CreateCircleSprite(Texture2D texture)
+    {
+        return Sprite.Create(
+            texture,
+            new Rect(0, 0, texture.width, texture.height),
+            Vector2.one * 0.5f,
+            PIXELS_PER_UNIT
+        );
+    }
+
+    private Texture2D CreateCircleTexture(int size, int borderThickness)
+    {
+        Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        texture.filterMode = FilterMode.Bilinear;
+
+        Color[] pixels = new Color[size * size];
+        Vector2 center = new Vector2(size * 0.5f, size * 0.5f);
+        float outerRadius = size * 0.5f - 1f;
+        float innerRadius = outerRadius - borderThickness;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                Vector2 pos = new Vector2(x, y);
+                float distance = Vector2.Distance(pos, center);
+
+                if (distance <= outerRadius)
+                {
+                    float alpha = 0f;
+
+                    if (distance >= innerRadius)
+                    {
+                        // Border area - solid with anti-aliasing
+                        alpha = 1f;
+                        if (distance > outerRadius - 1)
+                        {
+                            alpha = outerRadius - distance;
+                        }
+                        else if (distance < innerRadius + 1)
+                        {
+                            alpha = distance - innerRadius;
+                        }
+                    }
+                    else
+                    {
+                        // Inner gradient area
+                        float gradientFactor = distance / innerRadius;
+                        // Start at 0.3 alpha at inner radius, fade to 0 at center
+                        alpha = 0.3f * gradientFactor;
+                    }
+
+                    pixels[y * size + x] = new Color(1f, 1f, 1f, alpha);
+                }
+                else
+                {
+                    pixels[y * size + x] = Color.clear;
+                }
+            }
+        }
+
+        texture.SetPixels(pixels);
+        texture.Apply();
+
+        return texture;
     }
 
     private void Update()
@@ -48,17 +173,33 @@ public class CardInputHandler : Singleton<CardInputHandler>
     {
         if (selectedCardIndex >= 0)
         {
-            UpdatePreviewUnits();
+            Card selectedCard = DeckManager.Instance.GetHand()[selectedCardIndex];
+
+            if (selectedCard.IsUnitCard())
+            {
+                UpdatePreviewUnits();
+                HideSpellPreview();
+            }
+            else if (selectedCard.IsSpellCard())
+            {
+                UpdateSpellPreview();
+                ClearPreviewUnits();
+            }
         }
         else
         {
             ClearPreviewUnits();
+            HideSpellPreview();
         }
     }
 
     private void UpdatePreviewUnits()
     {
         Card selectedCard = DeckManager.Instance.GetHand()[selectedCardIndex];
+
+        // Skip if this is not a unit card
+        if (!selectedCard.IsUnitCard())
+            return;
 
         // Get the positions where units would be spawned
         List<Vector2> spawnPositions = GetSpawnPositions(selectedCard);
@@ -84,20 +225,53 @@ public class CardInputHandler : Singleton<CardInputHandler>
 
             // Update color based on validity and mana
             bool hasEnoughMana = ManaManager.Instance.HasEnoughMana(selectedCard.manaCost);
-            bool isValidPosition = IsValidSpawnPosition();
+            bool isValidPosition = IsValidTargetPosition(selectedCard);
 
             SpriteRenderer[] spriteRenderers = previewUnits[i]
                 .GetComponentsInChildren<SpriteRenderer>();
-            Color previewColor =
-                (hasEnoughMana && isValidPosition)
-                    ? new Color(1f, 1f, 1f, 0.5f)
-                    : // White and semi-transparent when valid
-                    new Color(1f, 0.5f, 0.5f, 0.5f); // Reddish when invalid
+            Color previewColor = (hasEnoughMana && isValidPosition) ? VALID_COLOR : INVALID_COLOR;
 
             foreach (SpriteRenderer sr in spriteRenderers)
             {
                 sr.color = previewColor;
             }
+        }
+    }
+
+    private void UpdateSpellPreview()
+    {
+        Card selectedCard = DeckManager.Instance.GetHand()[selectedCardIndex];
+
+        // Skip if this is not a spell card
+        if (!selectedCard.IsSpellCard())
+            return;
+
+        Vector3 mousePosition = GetMouseWorldPosition();
+
+        // Show spell preview object
+        spellPreviewObject.SetActive(true);
+        spellPreviewObject.transform.position = mousePosition;
+
+        // Scale the circle to match the spell's effect radius
+        // The circle texture is created with a radius of 1 world unit at scale 1
+        float spellRadius = selectedCard.spellPrefab.EffectRadius();
+        spellPreviewObject.transform.localScale = Vector3.one * spellRadius * 0.25f;
+        UpdateSpellPreviewCircle(spellRadius);
+
+        // Update color based on validity and mana
+        bool hasEnoughMana = ManaManager.Instance.HasEnoughMana(selectedCard.manaCost);
+        bool isValidPosition = IsValidTargetPosition(selectedCard);
+
+        Color previewColor = (hasEnoughMana && isValidPosition) ? VALID_COLOR : INVALID_COLOR;
+
+        spellPreviewSprite.color = previewColor;
+    }
+
+    private void HideSpellPreview()
+    {
+        if (spellPreviewObject != null)
+        {
+            spellPreviewObject.SetActive(false);
         }
     }
 
@@ -194,7 +368,8 @@ public class CardInputHandler : Singleton<CardInputHandler>
 
                 selectedCardIndex = -1;
                 CardsUI.Instance.SetActiveCardIndex(-1);
-                ClearPreviewUnits(); // Clear preview units when card is deselected
+                ClearPreviewUnits();
+                HideSpellPreview();
             }
         }
     }
@@ -208,7 +383,8 @@ public class CardInputHandler : Singleton<CardInputHandler>
 
             selectedCardIndex = -1;
             CardsUI.Instance.SetActiveCardIndex(-1);
-            ClearPreviewUnits(); // Clear preview units when card is deselected
+            ClearPreviewUnits();
+            HideSpellPreview();
         }
     }
 
@@ -216,26 +392,36 @@ public class CardInputHandler : Singleton<CardInputHandler>
     {
         Debug.Log("Card button clicked: " + index);
 
-        // Clear previous preview units if switching cards
+        // Clear previous previews if switching cards
         if (selectedCardIndex != index)
         {
             ClearPreviewUnits();
+            HideSpellPreview();
         }
 
         selectedCardIndex = index;
         CardsUI.Instance.SetActiveCardIndex(index);
     }
 
-    private bool IsValidSpawnPosition()
+    private bool IsValidTargetPosition(Card card)
     {
-        Vector2 spawnPosition = GetMouseWorldPosition();
-        if (!playableBounds.Contains(spawnPosition))
-            return false;
+        Vector2 targetPosition = GetMouseWorldPosition();
 
-        // Check if spawn position is inside a wall
-        Collider2D wallCollider = Physics2D.OverlapPoint(spawnPosition);
-        if (wallCollider != null && wallCollider.CompareTag("Wall"))
-            return false;
+        if (card.IsUnitCard())
+        {
+            if (!playableUnitBounds.Contains(targetPosition))
+                return false;
+
+            // For unit cards, check if spawn position is not inside a wall
+            Collider2D wallCollider = Physics2D.OverlapPoint(targetPosition);
+            if (wallCollider != null && wallCollider.CompareTag("Wall"))
+                return false;
+        }
+        else if (card.IsSpellCard())
+        {
+            if (!playableSpellBounds.Contains(targetPosition))
+                return false;
+        }
 
         return true;
     }
@@ -251,7 +437,7 @@ public class CardInputHandler : Singleton<CardInputHandler>
     {
         if (cardIndex < 0 || cardIndex >= DeckManager.Instance.GetHand().Count)
         {
-            Debug.Log("Trid to play card at invalid index");
+            Debug.Log("Tried to play card at invalid index");
             return;
         }
 
@@ -265,26 +451,70 @@ public class CardInputHandler : Singleton<CardInputHandler>
             return;
         }
 
-        if (!IsValidSpawnPosition())
+        if (!IsValidTargetPosition(cardToPlay))
         {
-            Debug.Log("Invalid spawn position");
+            Debug.Log("Invalid target position");
             return;
         }
 
-        // Clear preview units before spawning real units
+        // Clear previews before playing card
         ClearPreviewUnits();
+        HideSpellPreview();
 
+        // Spend mana and cycle card
         ManaManager.Instance.SpendMana(cardToPlay.manaCost);
         DeckManager.Instance.CycleCard(cardIndex);
-        UnitManager.Instance.SpawnUnits(
-            GetSpawnPositions(cardToPlay),
-            cardToPlay.unitPrefab,
-            UnitType.Friend
+
+        // Play the card based on its type
+        if (cardToPlay.IsUnitCard())
+        {
+            PlayUnitCard(cardToPlay);
+        }
+        else if (cardToPlay.IsSpellCard())
+        {
+            PlaySpellCard(cardToPlay);
+        }
+    }
+
+    private void PlayUnitCard(Card card)
+    {
+        UnitManager.Instance.SpawnUnits(GetSpawnPositions(card), card.unitPrefab, UnitType.Friend);
+
+        Debug.Log($"Played unit card: {card.cardName}");
+    }
+
+    private void PlaySpellCard(Card card)
+    {
+        Vector2 targetPosition = GetMouseWorldPosition();
+
+        // Instantiate the spell and cast it
+        GameObject spellObject = Instantiate(
+            card.spellPrefab.gameObject,
+            targetPosition,
+            Quaternion.identity
         );
+        Spell spell = spellObject.GetComponent<Spell>();
+
+        if (spell != null)
+        {
+            spell.Cast(targetPosition, UnitType.Friend);
+            Debug.Log($"Cast spell: {card.cardName} at {targetPosition}");
+        }
+        else
+        {
+            Debug.LogError($"Spell card {card.cardName} does not have a valid Spell component!");
+            Destroy(spellObject);
+        }
     }
 
     private List<Vector2> GetSpawnPositions(Card card)
     {
+        if (!card.IsUnitCard())
+        {
+            Debug.LogError("GetSpawnPositions called on non-unit card!");
+            return new List<Vector2>();
+        }
+
         float unitRadius = card.unitPrefab.GetComponent<CircleCollider2D>().radius;
         return UnitUtils.GetSpreadPositions(GetMouseWorldPosition(), card.unitCount, unitRadius);
     }
@@ -292,7 +522,10 @@ public class CardInputHandler : Singleton<CardInputHandler>
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(playableBounds.center, playableBounds.size);
+        Gizmos.DrawWireCube(playableUnitBounds.center, playableUnitBounds.size);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(playableSpellBounds.center, playableSpellBounds.size);
     }
 
     protected override void OnDestroy()
@@ -306,6 +539,17 @@ public class CardInputHandler : Singleton<CardInputHandler>
         if (previewMaterial != null)
         {
             Destroy(previewMaterial);
+        }
+
+        // Clean up the circle texture
+        Destroy(circleTexture1x);
+        Destroy(circleTexture2x);
+        Destroy(circleTexture3x);
+
+        // Clean up spell preview object
+        if (spellPreviewObject != null)
+        {
+            Destroy(spellPreviewObject);
         }
     }
 }

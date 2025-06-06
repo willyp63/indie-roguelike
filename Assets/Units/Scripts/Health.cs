@@ -19,10 +19,7 @@ public class Health : MonoBehaviour
 
     public UnitType OppositeType()
     {
-        if (IsNeutral())
-            return UnitType.Neutral;
-
-        return IsEnemy() ? UnitType.Friend : UnitType.Enemy;
+        return UnitUtils.GetOppositeUnitType(type);
     }
 
     public bool IsNeutral()

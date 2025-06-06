@@ -164,10 +164,13 @@ public class Unit : MonoBehaviour
         }
 
         Vector2 targetDirection;
+        float targetDistance = Mathf.Infinity;
         if (targetUnit != null)
         {
             // move towards target unit
-            targetDirection = (targetUnit.transform.position - transform.position).normalized;
+            Vector2 toTarget = targetUnit.transform.position - transform.position;
+            targetDirection = toTarget.normalized;
+            targetDistance = toTarget.magnitude;
         }
         else
         {
@@ -179,7 +182,11 @@ public class Unit : MonoBehaviour
         }
 
         // adjust move direction to avoid other units
-        moveDirection = UnitManager.Instance.GetMoveDirection(this, targetDirection);
+        moveDirection = UnitManager.Instance.GetMoveDirection(
+            this,
+            targetDirection,
+            targetDistance
+        );
     }
 
     private void UpdateState(

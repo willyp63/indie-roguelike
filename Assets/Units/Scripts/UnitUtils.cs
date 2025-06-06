@@ -35,6 +35,14 @@ public static class UnitUtils
         return sqrDistance <= adjustedRange * adjustedRange;
     }
 
+    public static UnitType GetOppositeUnitType(UnitType unitType)
+    {
+        if (unitType == UnitType.Neutral)
+            return UnitType.Neutral;
+
+        return unitType == UnitType.Enemy ? UnitType.Friend : UnitType.Enemy;
+    }
+
     public static Direction GetDirection(Vector2 startPos, Vector2 endPos)
     {
         // Calculate direction vector
