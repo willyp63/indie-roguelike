@@ -76,8 +76,11 @@ public class Health : MonoBehaviour
 
     public bool IsDead()
     {
-        return currentHealth <= 0;
+        return currentHealth <= 0 && !isImmortal;
     }
+
+    [SerializeField]
+    private bool isImmortal = false;
 
     [NonSerialized]
     public UnityEvent<int> onDamageTaken;
@@ -119,10 +122,11 @@ public class Health : MonoBehaviour
         }
 
         currentHealth -= damage;
+        currentHealth = Mathf.Max(currentHealth, 0);
         onDamageTaken?.Invoke(damage);
 
         // check if dead
-        if (currentHealth <= 0)
+        if (IsDead())
         {
             currentHealth = 0;
             onDeath?.Invoke();
@@ -142,10 +146,7 @@ public class Health : MonoBehaviour
         }
 
         currentHealth += healAmount;
-        if (currentHealth > maxHealth)
-        {
-            currentHealth = maxHealth;
-        }
+        currentHealth = Mathf.Min(currentHealth, maxHealth);
 
         onHealed?.Invoke(healAmount);
     }

@@ -18,4 +18,4 @@ MonoBehaviour:
   manaCost: 1
   unitCount: 0
   unitPrefab: {fileID: 0}
-  spellPrefab: {fileID: 3700171598539255338, guid: 3933e706eb3da7f47950a8f2631560e5, type: 3}
+  spellPrefab: {fileID: 5219531488125870580, guid: 3933e706eb3da7f47950a8f2631560e5, type: 3}

@@ -9,6 +9,9 @@ public class HealthBar : MonoBehaviour
     [SerializeField]
     private int offsetY = 24;
 
+    [SerializeField]
+    private bool alwaysShow = false;
+
     // Static reference to shared settings - loaded once and shared across all instances
     private static HealthBarSettings sharedSettings;
 
@@ -195,7 +198,7 @@ public class HealthBar : MonoBehaviour
         bool isAtFullHealth = health.CurrentHealth() >= health.MaxHealth();
         bool isAlive = !health.IsDead();
 
-        if (isAtFullHealth && isAlive)
+        if (!alwaysShow && isAtFullHealth && isAlive)
         {
             // Show team indicator dot, hide health bar components
             frameRenderer.gameObject.SetActive(false);
@@ -207,7 +210,7 @@ public class HealthBar : MonoBehaviour
             // Show the health bar container
             healthBarTransform.gameObject.SetActive(true);
         }
-        else if (isAlive && health.CurrentHealth() < health.MaxHealth())
+        else if (isAlive)
         {
             // Show health bar, hide team indicator dot
             frameRenderer.gameObject.SetActive(true);
