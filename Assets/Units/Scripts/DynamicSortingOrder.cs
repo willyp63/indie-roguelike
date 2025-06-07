@@ -27,13 +27,13 @@ public class DynamicSortingOrder : MonoBehaviour
     {
         // Update the sorting order based on the Y position
         int sortingOrder = Mathf.RoundToInt(-transform.position.y * 100);
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.sortingOrder = sortingOrder;
-        }
-        else if (sortingGroup != null)
+        if (sortingGroup != null)
         {
             sortingGroup.sortingOrder = sortingOrder;
+        }
+        else if (spriteRenderer != null)
+        {
+            spriteRenderer.sortingOrder = sortingOrder;
         }
     }
 }

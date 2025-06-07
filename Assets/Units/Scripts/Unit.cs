@@ -125,10 +125,7 @@ public class Unit : MonoBehaviour
             }
         }
 
-        if (isStatic)
-            return;
-
-        if (!moveDirection.Equals(Vector2.zero))
+        if (!isStatic && !moveDirection.Equals(Vector2.zero))
         {
             FacePosition(transform.position + new Vector3(moveDirection.x, moveDirection.y, 0f));
             UpdateState(UnitState.Pursuing, "Walk");
@@ -141,9 +138,6 @@ public class Unit : MonoBehaviour
 
     public void UpdateTargetFromManager()
     {
-        if (isStatic)
-            return;
-
         // clear target if it's out of range or not visible
         // TODO: use basic attack range instead of vision range
         if (targetUnit != null)
@@ -162,6 +156,9 @@ public class Unit : MonoBehaviour
         {
             targetUnit = UnitManager.Instance.FindNearestVisibleTarget(this);
         }
+
+        if (isStatic)
+            return;
 
         Vector2 targetDirection;
         float targetDistance = Mathf.Infinity;
