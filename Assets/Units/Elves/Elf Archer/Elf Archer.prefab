@@ -280,7 +280,7 @@ GameObject:
   - component: {fileID: 807981405905685892}
   - component: {fileID: 5085006443041426592}
   m_Layer: 0
-  m_Name: Human Archer
+  m_Name: Elf Archer
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

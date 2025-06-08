@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7015478441253045851}
   - component: {fileID: 6459866506392287012}
   m_Layer: 0
-  m_Name: Human Archer Arrow
+  m_Name: Elf Archer Arrow
   m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

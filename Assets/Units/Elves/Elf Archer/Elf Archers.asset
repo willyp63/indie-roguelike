@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b88e185d095854842a00f07b9010aebd, type: 3}
-  m_Name: Human Archer
+  m_Name: Elf Archers
   m_EditorClassIdentifier: 
-  cardName: Human Archers
+  cardName: Elf Archers
   description: Weak ranged unit
   cardArt: {fileID: 21300000, guid: 58949bc16042d5140be0966d84305a2a, type: 3}
   manaCost: 3
