@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Human Archers
   description: Weak ranged unit
-  cardArt: {fileID: 699512835, guid: 555a52d675d173f4192aadc34959fecb, type: 3}
+  cardArt: {fileID: 21300000, guid: 7fda5f74e7ab4cb4bb4993a5ab8c3e81, type: 3}
   manaCost: 3
   unitCount: 4
   unitPrefab: {fileID: 1860159409765746910, guid: 0021c7ca3aa3eeb479a05e18490aaf41, type: 3}

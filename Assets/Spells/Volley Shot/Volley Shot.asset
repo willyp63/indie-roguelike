@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Volley Shot
   description: 
-  cardArt: {fileID: 218317363, guid: c6efaaac11607cd4ab6751a124c0b621, type: 3}
+  cardArt: {fileID: 21300000, guid: c3c2f2837c7532047a606c950ce99b69, type: 3}
   manaCost: 2
   unitCount: 0
   unitPrefab: {fileID: 0}

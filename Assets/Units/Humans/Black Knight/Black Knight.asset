@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Black Knight
   description: Strong melee unit
-  cardArt: {fileID: 1353702961, guid: 9ce1d1aec2dc1514d942079f5e1cfe14, type: 3}
+  cardArt: {fileID: 21300000, guid: 4383155dedc21a54798ae29029747742, type: 3}
   manaCost: 5
   unitCount: 1
   unitPrefab: {fileID: 4487921303902649061, guid: afa63caca60e67546a221a43c690370e, type: 3}
