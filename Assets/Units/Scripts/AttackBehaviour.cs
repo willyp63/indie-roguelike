@@ -6,6 +6,14 @@ using UnityEngine;
 public abstract class AttackBehaviour : MonoBehaviour
 {
     [SerializeField]
+    private bool isBasicAttack = true;
+
+    public bool IsBasicAttack()
+    {
+        return isBasicAttack;
+    }
+
+    [SerializeField]
     private int attackDamage = 10;
 
     public int AttackDamage()

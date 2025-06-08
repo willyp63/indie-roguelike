@@ -149,10 +149,12 @@ public class UnitProjectile : MonoBehaviour
     {
         if (effect != null)
         {
-            var spriteRenderer =
-                GetComponent<SpriteRenderer>() ?? GetComponentInChildren<SpriteRenderer>();
-            if (spriteRenderer != null)
-                spriteRenderer.enabled = false;
+            var rootSpriteRenderer = GetComponent<SpriteRenderer>();
+            var childSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            if (rootSpriteRenderer != null)
+                rootSpriteRenderer.enabled = false;
+            if (childSpriteRenderer != null)
+                childSpriteRenderer.enabled = false;
             effect.Play();
             yield return new WaitForSeconds(effectDuration);
         }

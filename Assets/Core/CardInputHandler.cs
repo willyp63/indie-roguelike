@@ -308,6 +308,11 @@ public class CardInputHandler : Singleton<CardInputHandler>
         Animator animator = previewUnit.GetComponent<Animator>();
         if (animator != null)
             animator.enabled = false;
+        Animator[] childAnimators = previewUnit.GetComponentsInChildren<Animator>();
+        foreach (Animator childAnimator in childAnimators)
+        {
+            childAnimator.enabled = false;
+        }
 
         // Disable particle systems
         ParticleSystem[] particleSystems = previewUnit.GetComponentsInChildren<ParticleSystem>();

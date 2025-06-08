@@ -1493,8 +1493,8 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: -0.5
-    y: -0.5
+    x: -0.6666667
+    y: -0.5555555
     width: 2
     height: 2
   near clip plane: 0.3
@@ -6556,7 +6556,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -1768782259, guid: 208ac8af0e1e56a46a1d155424b28dec, type: 3}
+  m_Sprite: {fileID: 699512835, guid: 555a52d675d173f4192aadc34959fecb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -6575,8 +6575,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1712195249}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 1.08, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 595186797}
@@ -8535,10 +8535,10 @@ MonoBehaviour:
   initialDeck:
   - {fileID: 11400000, guid: de45a02fa6f212f488da1e5c1c4e4e22, type: 2}
   - {fileID: 11400000, guid: 58848c398b0bf8148ba3c040296c8406, type: 2}
-  - {fileID: 11400000, guid: 58848c398b0bf8148ba3c040296c8406, type: 2}
-  - {fileID: 11400000, guid: de45a02fa6f212f488da1e5c1c4e4e22, type: 2}
-  - {fileID: 11400000, guid: 0ecdda843b28ab249a5697e01887f0a7, type: 2}
-  - {fileID: 11400000, guid: ed6477b074dad56458d62fc01720a28c, type: 2}
+  - {fileID: 11400000, guid: fb86fc3f62c8cae4fa2762abde42fd7b, type: 2}
+  - {fileID: 11400000, guid: fb86fc3f62c8cae4fa2762abde42fd7b, type: 2}
+  - {fileID: 11400000, guid: fb86fc3f62c8cae4fa2762abde42fd7b, type: 2}
+  - {fileID: 11400000, guid: fb86fc3f62c8cae4fa2762abde42fd7b, type: 2}
   - {fileID: 11400000, guid: ed6477b074dad56458d62fc01720a28c, type: 2}
   - {fileID: 11400000, guid: 0ecdda843b28ab249a5697e01887f0a7, type: 2}
 --- !u!4 &2110422931

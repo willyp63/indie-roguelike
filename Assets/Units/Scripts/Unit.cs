@@ -38,7 +38,13 @@ public class Unit : MonoBehaviour
         return health;
     }
 
+    private AttackBehaviour basicAttack;
     private AttackBehaviour[] attackBehaviours;
+
+    public AttackBehaviour BasicAttack()
+    {
+        return basicAttack;
+    }
 
     public AttackBehaviour[] AttackBehaviours()
     {
@@ -78,8 +84,16 @@ public class Unit : MonoBehaviour
     private void Start()
     {
         health = GetComponent<Health>();
+
         attackBehaviours = GetComponents<AttackBehaviour>();
+        basicAttack = System.Array.Find(attackBehaviours, attack => attack.IsBasicAttack());
+        if (basicAttack == null)
+        {
+            Debug.LogError("No basic attack found for unit " + name);
+        }
+
         movementBehaviour = GetComponent<MovementBehaviour>();
+
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
 

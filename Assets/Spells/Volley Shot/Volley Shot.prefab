@@ -4941,7 +4941,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effectRadius: 3
-  damage: 100
+  damage: 80
   damageDelay: 0.66
   arrowEffect: {fileID: 6816805373430988776}
   effectDuration: 1

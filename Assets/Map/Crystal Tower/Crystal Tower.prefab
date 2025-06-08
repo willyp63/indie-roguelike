@@ -5422,6 +5422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd3df09ae89c8fa4dbe10c9375c82f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isBasicAttack: 1
   attackDamage: 10
   attackCooldown: 0
   attackDuration: 2
@@ -5429,7 +5430,7 @@ MonoBehaviour:
   attackDelay: 1.5
   animationTrigger: Attack
   pushForce: 0
-  projectilePrefab: {fileID: 1364068671585869156, guid: 55d95963c452fce449c2a13740279fa8, type: 3}
+  projectilePrefab: {fileID: 276050617725323272, guid: 55d95963c452fce449c2a13740279fa8, type: 3}
   downFireLocation: {fileID: 8607997736707154218}
   sideFireLocation: {fileID: 8607997736707154218}
   upFireLocation: {fileID: 8607997736707154218}

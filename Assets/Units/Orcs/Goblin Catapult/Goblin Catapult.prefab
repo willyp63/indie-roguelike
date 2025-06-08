@@ -502,6 +502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd3df09ae89c8fa4dbe10c9375c82f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isBasicAttack: 1
   attackDamage: 32
   attackCooldown: 0
   attackDuration: 2.5

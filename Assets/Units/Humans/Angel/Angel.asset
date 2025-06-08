@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b88e185d095854842a00f07b9010aebd, type: 3}
-  m_Name: Black Knight
+  m_Name: Angel
   m_EditorClassIdentifier: 
-  cardName: Black Knight
-  description: Strong melee unit
-  cardArt: {fileID: 21300000, guid: 758268981fd2c294abdc491c41c7a1d4, type: 3}
-  manaCost: 5
+  cardName: Angel
+  description: Healing Unit
+  cardArt: {fileID: 21300000, guid: e6f0d5bc6dbd96b4b993733d56ef9dd9, type: 3}
+  manaCost: 3
   unitCount: 1
-  unitPrefab: {fileID: 4487921303902649061, guid: afa63caca60e67546a221a43c690370e, type: 3}
+  unitPrefab: {fileID: 3030478209441554987, guid: 07c45f3b04d1a71449f00e3e1767e0e6, type: 3}
   spellPrefab: {fileID: 0}

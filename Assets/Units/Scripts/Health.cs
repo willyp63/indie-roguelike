@@ -79,6 +79,11 @@ public class Health : MonoBehaviour
         return currentHealth <= 0 && !isImmortal;
     }
 
+    public bool IsFullHealth()
+    {
+        return currentHealth >= maxHealth;
+    }
+
     [SerializeField]
     private bool isImmortal = false;
 
