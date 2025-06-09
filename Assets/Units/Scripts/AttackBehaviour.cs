@@ -67,6 +67,7 @@ public abstract class AttackBehaviour : MonoBehaviour
     protected Health health;
 
     private float lastAttackTime = Mathf.NegativeInfinity;
+    private Coroutine attackCoroutine;
 
     private void Start()
     {
@@ -86,11 +87,31 @@ public abstract class AttackBehaviour : MonoBehaviour
         return Time.time - lastAttackTime < attackCooldown;
     }
 
+    public virtual bool IsActive()
+    {
+        return Time.time - lastAttackTime < attackDuration;
+    }
+
     public void Attack(Health target)
     {
         lastAttackTime = Time.time;
 
-        StartCoroutine(AreaAttackAfterDelay(target));
+        // Cancel any existing attack coroutine before starting a new one
+        if (attackCoroutine != null)
+        {
+            StopCoroutine(attackCoroutine);
+        }
+
+        attackCoroutine = StartCoroutine(AreaAttackAfterDelay(target));
+    }
+
+    public void CancelAttack()
+    {
+        if (attackCoroutine != null)
+        {
+            StopCoroutine(attackCoroutine);
+            attackCoroutine = null;
+        }
     }
 
     private IEnumerator AreaAttackAfterDelay(Health target)
@@ -100,6 +121,9 @@ public abstract class AttackBehaviour : MonoBehaviour
         // Check that the unit is still alive and the target is still alive
         if (!health.IsDead() && target != null && !target.IsDead())
             PerformAttack(target);
+
+        // Clear the coroutine reference when it completes naturally
+        attackCoroutine = null;
     }
 
     protected abstract void PerformAttack(Health target);

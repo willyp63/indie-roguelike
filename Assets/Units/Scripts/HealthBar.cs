@@ -16,9 +16,9 @@ public class HealthBar : MonoBehaviour
     private static HealthBarSettings sharedSettings;
 
     private readonly Color ENEMY_BACKGROUND_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-    private readonly Color ENEMY_FOREGROUND_COLOR = new Color(0.8f, 0.2f, 0.2f, 0.9f);
+    private readonly Color ENEMY_FOREGROUND_COLOR = new Color(1f, 0.5f, 0f, 0.9f);
     private readonly Color FRIEND_BACKGROUND_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-    private readonly Color FRIEND_FOREGROUND_COLOR = new Color(0.2f, 0.8f, 0.2f, 0.9f);
+    private readonly Color FRIEND_FOREGROUND_COLOR = new Color(0f, 1f, 0.5f, 0.9f);
     private readonly Color NEUTRAL_BACKGROUND_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.8f);
     private readonly Color NEUTRAL_FOREGROUND_COLOR = new Color(0.8f, 0.8f, 0.2f, 0.9f);
 

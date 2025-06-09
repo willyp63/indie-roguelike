@@ -75,8 +75,7 @@ public class Unit : MonoBehaviour
     private Unit targetUnit;
     private Vector2 moveDirection;
 
-    private float lastAttackTime = Mathf.NegativeInfinity;
-    private float lastAttackDuration = 0f;
+    private AttackBehaviour activeAttack;
     private float lastAttackCheckAt = Mathf.NegativeInfinity;
 
     private UnitState state = UnitState.Idle;
@@ -112,7 +111,7 @@ public class Unit : MonoBehaviour
         if (health.IsDead())
             return;
 
-        if (Time.time - lastAttackTime < lastAttackDuration)
+        if (activeAttack?.IsActive() ?? false)
             return;
 
         if (Time.time - lastAttackCheckAt > ATTACK_UPDATE_INTERVAL)
@@ -128,8 +127,7 @@ public class Unit : MonoBehaviour
                 if (attackTarget == null)
                     continue;
 
-                lastAttackTime = Time.time;
-                lastAttackDuration = attackBehaviour.AttackDuration();
+                activeAttack = attackBehaviour;
 
                 FacePosition(attackTarget.transform.position);
                 UpdateState(UnitState.Attacking, attackBehaviour.AnimationTrigger(), true);
@@ -152,16 +150,20 @@ public class Unit : MonoBehaviour
 
     public void UpdateTargetFromManager()
     {
-        // clear target if it's out of range or not visible
-        // TODO: use basic attack range instead of vision range
+        // clear target if it's dead or out of range
         if (targetUnit != null)
         {
             if (
-                !UnitUtils.IsWithinRange(health, targetUnit.Health(), visionRange)
-                || !UnitManager.Instance.HasLineOfSight(this, targetUnit.transform.position)
+                targetUnit.Health().IsDead()
+                || !UnitUtils.IsWithinRange(
+                    health,
+                    targetUnit.Health(),
+                    basicAttack?.AttackRange() ?? visionRange
+                )
             )
             {
                 targetUnit = null;
+                activeAttack?.CancelAttack();
             }
         }
 

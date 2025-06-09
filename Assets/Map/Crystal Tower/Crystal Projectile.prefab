@@ -4932,8 +4932,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe3a927544e39f0409d8dfc606c9b90e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitRadius: 0.2
-  isAOE: 0
+  hitRadius: 0.5
+  isAOE: 1
   effect: {fileID: 1284764134040422747}
   effectDuration: 0.2
 --- !u!1 &4166726032020185509

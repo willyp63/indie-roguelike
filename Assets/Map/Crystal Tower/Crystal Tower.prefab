@@ -5423,7 +5423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBasicAttack: 1
-  attackDamage: 10
+  attackDamage: 32
   attackCooldown: 0
   attackDuration: 2
   attackRange: 12

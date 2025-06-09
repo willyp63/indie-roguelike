@@ -364,12 +364,8 @@ public class UnitManager : Singleton<UnitManager>
             float dSqrToUnit = (searcher.transform.position - unit.transform.position).sqrMagnitude;
             if (dSqrToUnit < closestDistanceSqr)
             {
-                // Only check line of sight for the closest candidate to save performance
-                if (HasLineOfSight(searcher, unit.transform.position))
-                {
-                    closestDistanceSqr = dSqrToUnit;
-                    closestUnit = unit;
-                }
+                closestDistanceSqr = dSqrToUnit;
+                closestUnit = unit;
             }
         }
 
