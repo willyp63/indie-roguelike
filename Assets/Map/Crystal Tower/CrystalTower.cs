@@ -39,7 +39,7 @@ public class CrystalTower : MonoBehaviour
                 breakEffect.Play();
             }
 
-            // TODO: Give the player a crystal resource here
+            ShardManager.Instance.AddShards(1);
             Debug.Log("Crystal Tower regenerated! TODO: Give player crystal resource");
         }
     }

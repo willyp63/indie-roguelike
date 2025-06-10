@@ -404,6 +404,7 @@ MonoBehaviour:
   type: 1
   scaleFactor: 1
   maxHealth: 40
+  isImmortal: 0
 --- !u!114 &1865560453869441822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -418,6 +419,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   offsetY: 21
+  alwaysShow: 0
 --- !u!114 &1860159409765746910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,7 +433,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStatic: 0
-  visionRange: 9
+  visionRange: 8
 --- !u!114 &1630167583429081478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -444,6 +446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd3df09ae89c8fa4dbe10c9375c82f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isBasicAttack: 1
   attackDamage: 12
   attackCooldown: 0
   attackDuration: 1

@@ -142,7 +142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   scaleFactor: 1
-  maxHealth: 1000000
+  maxHealth: 2000
   isImmortal: 0
 --- !u!114 &5650048910664094742
 MonoBehaviour:

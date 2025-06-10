@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Volley Shot
   description: 
   cardArt: {fileID: 21300000, guid: a159cb053d6c3234da5d114dc8b0e064, type: 3}
-  manaCost: 1
+  manaCost: 2
   unitCount: 0
   unitPrefab: {fileID: 0}
   spellPrefab: {fileID: 5219531488125870580, guid: 3933e706eb3da7f47950a8f2631560e5, type: 3}

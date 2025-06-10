@@ -19,7 +19,7 @@ public enum Direction
 
 public static class UnitUtils
 {
-    private const float UNIT_SPACING_MULTIPLIER = 2.5f;
+    private const float UNIT_SPACING_MULTIPLIER = 2.75f;
 
     public static bool IsWithinRange(Health health1, Health health2, float range)
     {

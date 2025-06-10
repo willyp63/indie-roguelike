@@ -86,10 +86,6 @@ public class Unit : MonoBehaviour
 
         attackBehaviours = GetComponents<AttackBehaviour>();
         basicAttack = System.Array.Find(attackBehaviours, attack => attack.IsBasicAttack());
-        if (basicAttack == null)
-        {
-            Debug.LogError("No basic attack found for unit " + name);
-        }
 
         movementBehaviour = GetComponent<MovementBehaviour>();
 

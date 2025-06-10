@@ -119,7 +119,7 @@ public class WaypointManager : Singleton<WaypointManager>
     private Vector2 ComputeBestWaypointDirection(Vector2 worldPosition, UnitType unitType)
     {
         // Find the best waypoint using existing logic
-        WaypointZone zone = WaypointManager.Instance.GetZone(unitType, worldPosition);
+        WaypointZone zone = GetZone(unitType, worldPosition);
         Vector2 bestDirection = Vector2.zero;
 
         if (zone != null)

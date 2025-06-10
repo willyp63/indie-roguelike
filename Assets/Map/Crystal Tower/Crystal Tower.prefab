@@ -5366,7 +5366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   scaleFactor: 1
-  maxHealth: 500
+  maxHealth: 800
   isImmortal: 1
 --- !u!114 &1554706507550579550
 MonoBehaviour:
@@ -5425,7 +5425,7 @@ MonoBehaviour:
   isBasicAttack: 1
   attackDamage: 32
   attackCooldown: 0
-  attackDuration: 2
+  attackDuration: 3
   attackRange: 12
   attackDelay: 1.5
   animationTrigger: Attack
