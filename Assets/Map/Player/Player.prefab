@@ -157,8 +157,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scale: 3
-  offsetY: 52
+  offsetY: 56
   alwaysShow: 1
+  isVisible: 1
 --- !u!114 &4622927688848581155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,7 +187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBasicAttack: 1
-  attackDamage: 20
+  attackDamage: 25
   attackCooldown: 0
   attackDuration: 3
   attackRange: 9

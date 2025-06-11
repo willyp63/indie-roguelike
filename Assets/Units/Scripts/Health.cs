@@ -84,6 +84,18 @@ public class Health : MonoBehaviour
         return currentHealth >= maxHealth;
     }
 
+    private bool isBrokenCrystal = false;
+
+    public bool IsBrokenCrystal()
+    {
+        return isBrokenCrystal;
+    }
+
+    public void SetIsBrokenCrystal(bool isBroken)
+    {
+        isBrokenCrystal = isBroken;
+    }
+
     [SerializeField]
     private bool isImmortal = false;
 
@@ -117,7 +129,7 @@ public class Health : MonoBehaviour
 
     public void Damage(int damage)
     {
-        if (IsDead())
+        if (IsBrokenCrystal() || IsDead())
             return;
 
         if (damage < 0)

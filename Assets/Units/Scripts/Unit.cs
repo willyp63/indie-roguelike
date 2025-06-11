@@ -107,6 +107,12 @@ public class Unit : MonoBehaviour
         if (health.IsDead())
             return;
 
+        if (health.IsBrokenCrystal())
+        {
+            activeAttack?.CancelAttack();
+            return;
+        }
+
         if (activeAttack?.IsActive() ?? false)
             return;
 

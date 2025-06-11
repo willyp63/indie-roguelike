@@ -12,6 +12,20 @@ public class HealthBar : MonoBehaviour
     [SerializeField]
     private bool alwaysShow = false;
 
+    [SerializeField]
+    private bool isVisible = true;
+
+    // Public property to get/set visibility
+    public bool IsVisible
+    {
+        get { return isVisible; }
+        set
+        {
+            isVisible = value;
+            UpdateHealthBar(); // Refresh the health bar when visibility changes
+        }
+    }
+
     // Static reference to shared settings - loaded once and shared across all instances
     private static HealthBarSettings sharedSettings;
 
@@ -191,6 +205,13 @@ public class HealthBar : MonoBehaviour
     {
         if (health == null || filledRenderer == null)
             return;
+
+        // Check visibility first - if not visible, hide everything
+        if (!isVisible)
+        {
+            healthBarTransform.gameObject.SetActive(false);
+            return;
+        }
 
         float healthPercentage = (float)health.CurrentHealth() / health.MaxHealth();
         healthPercentage = Mathf.Clamp01(healthPercentage);

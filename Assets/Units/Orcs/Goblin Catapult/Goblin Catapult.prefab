@@ -476,6 +476,7 @@ MonoBehaviour:
   scale: 1
   offsetY: 25
   alwaysShow: 0
+  isVisible: 1
 --- !u!114 &3580501831942194810
 MonoBehaviour:
   m_ObjectHideFlags: 0
