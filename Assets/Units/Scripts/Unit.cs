@@ -184,6 +184,17 @@ public class Unit : MonoBehaviour
         {
             // move towards target unit
             Vector2 toTarget = targetUnit.transform.position - transform.position;
+
+            // dont move if we're in range of the target unit
+            if (
+                basicAttack != null
+                && UnitUtils.IsWithinRange(health, targetUnit.Health(), basicAttack.AttackRange())
+            )
+            {
+                moveDirection = Vector2.zero;
+                return;
+            }
+
             targetDirection = toTarget.normalized;
             targetDistance = toTarget.magnitude;
         }

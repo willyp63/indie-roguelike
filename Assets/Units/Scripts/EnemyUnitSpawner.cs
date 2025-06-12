@@ -266,7 +266,7 @@ public class EnemyUnitSpawner : MonoBehaviour
 
         // TODO: move to config variables
         // https://www.wolframalpha.com/input?i=y%3D%2810000%2Bx%5E1.5%29+%2F+10000+from+0+to+1200
-        return (10_000 + Mathf.Pow(elapsedTime, 1.5f)) / 10_000;
+        return (10_000 + Mathf.Pow(elapsedTime, 1.5f)) / 5_000;
     }
 
     public float GetElapsedTime()
