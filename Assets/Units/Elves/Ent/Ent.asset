@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b88e185d095854842a00f07b9010aebd, type: 3}
-  m_Name: Elf Knights
+  m_Name: Ent
   m_EditorClassIdentifier: 
-  cardName: Elf Knights
-  description: Weak melee unit
-  cardArt: {fileID: 21300000, guid: c37ceb0ace2074f4db248e51b25954eb, type: 3}
-  manaCost: 3
-  unitCount: 6
-  unitPrefab: {fileID: 4487921303902649061, guid: 7badd0e39b58ca14984aa9392d970eae, type: 3}
+  cardName: Ent
+  description: Strong melee unit
+  cardArt: {fileID: 1237080007, guid: a77f8986c81c78c459ca3c35f911bcee, type: 3}
+  manaCost: 4
+  unitCount: 1
+  unitPrefab: {fileID: 3804696478075084463, guid: f86c808894daf854385f88934b3b9da3, type: 3}
   spellPrefab: {fileID: 0}

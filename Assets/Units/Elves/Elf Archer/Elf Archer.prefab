@@ -353,7 +353,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 40
+  m_Mass: 30
   m_LinearDrag: 4
   m_AngularDrag: 0
   m_GravityScale: 0
@@ -403,7 +403,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   scaleFactor: 1
-  maxHealth: 40
+  maxHealth: 30
   isImmortal: 0
 --- !u!114 &1865560453869441822
 MonoBehaviour:
@@ -420,6 +420,7 @@ MonoBehaviour:
   scale: 1
   offsetY: 21
   alwaysShow: 0
+  isVisible: 1
 --- !u!114 &1860159409765746910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,8 +448,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBasicAttack: 1
-  attackDamage: 12
-  attackCooldown: 0
+  attackDamage: 20
+  attackCooldown: 2
   attackDuration: 1
   attackRange: 6
   attackDelay: 0.5
@@ -472,7 +473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81ed5e6e0923c6a41a3119359eaa4f17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1.75
+  speed: 1.5
 --- !u!114 &5085006443041426592
 MonoBehaviour:
   m_ObjectHideFlags: 0
