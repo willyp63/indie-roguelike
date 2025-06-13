@@ -16,6 +16,14 @@ public class Unit : MonoBehaviour
     static readonly float ATTACK_UPDATE_INTERVAL = 0.2f;
 
     [SerializeField]
+    private int karmaValue = 0;
+
+    public int KarmaValue()
+    {
+        return karmaValue;
+    }
+
+    [SerializeField]
     private bool isStatic = false;
 
     public bool IsStatic()

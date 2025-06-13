@@ -323,8 +323,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   offsetY: 56
-  alwaysShow: 0
-  isVisible: 1
 --- !u!114 &5774377235781017747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,6 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c411fdfeaa33e4fad0bd28de011660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  karmaValue: 5
   isStatic: 0
   visionRange: 8
 --- !u!114 &7205798534500357727

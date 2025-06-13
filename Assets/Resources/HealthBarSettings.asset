@@ -12,8 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b746408dc4d386458c691892e6ccf1f, type: 3}
   m_Name: HealthBarSettings
   m_EditorClassIdentifier: 
-  frameSprite: {fileID: -1708227857, guid: 8120be3c7e7bd614cb012f3207ae8daf, type: 3}
-  filledBarSprite: {fileID: 1031266929, guid: 8120be3c7e7bd614cb012f3207ae8daf, type: 3}
-  unfilledBarSprite: {fileID: 1060578031, guid: 8120be3c7e7bd614cb012f3207ae8daf, type: 3}
-  dotFrameSprite: {fileID: 1638937457, guid: 5ffc3799c90717b46bb8a8ea9727f4b7, type: 3}
-  dotFillSprite: {fileID: -1205870057, guid: 5ffc3799c90717b46bb8a8ea9727f4b7, type: 3}
+  healthBarPrefab: {fileID: 9205186894337505672, guid: 19a1227a8c8cc4c48ba79b178db7f1b4, type: 3}

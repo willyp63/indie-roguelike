@@ -9,42 +9,15 @@ public class HealthBar : MonoBehaviour
     [SerializeField]
     private int offsetY = 24;
 
-    [SerializeField]
-    private bool alwaysShow = false;
+    private HealthBarSettings sharedSettings;
 
-    [SerializeField]
-    private bool isVisible = true;
-
-    // Public property to get/set visibility
-    public bool IsVisible
-    {
-        get { return isVisible; }
-        set
-        {
-            isVisible = value;
-            UpdateHealthBar(); // Refresh the health bar when visibility changes
-        }
-    }
-
-    // Static reference to shared settings - loaded once and shared across all instances
-    private static HealthBarSettings sharedSettings;
-
-    private readonly Color ENEMY_BACKGROUND_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-    private readonly Color ENEMY_FOREGROUND_COLOR = new Color(1f, 0.5f, 0f, 0.9f);
-    private readonly Color FRIEND_BACKGROUND_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-    private readonly Color FRIEND_FOREGROUND_COLOR = new Color(0f, 1f, 0.5f, 0.9f);
-    private readonly Color NEUTRAL_BACKGROUND_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.8f);
-    private readonly Color NEUTRAL_FOREGROUND_COLOR = new Color(0.8f, 0.8f, 0.2f, 0.9f);
+    private readonly Color ENEMY_HEALTH_COLOR = new Color(1f, 0.5f, 0f, 0.8f);
+    private readonly Color FRIEND_HEALTH_COLOR = new Color(0f, 1f, 0.5f, 0.8f);
+    private readonly Color FRIEND_KARMA_COLOR = new Color(0f, 0.8f, 0.8f, 0.8f);
 
     private Health health;
-    private Transform healthBarTransform;
-    private SpriteRenderer frameRenderer;
-    private SpriteRenderer unfilledRenderer;
-    private SpriteRenderer filledRenderer;
-    private SpriteRenderer dotFrameRenderer;
-    private SpriteRenderer dotFillRenderer;
+    private HealthBarUI healthBarUI;
     private Vector3 healthBarOffset;
-
     private static readonly int PIXELS_PER_UNIT = 32;
 
     void Start()
@@ -78,6 +51,11 @@ public class HealthBar : MonoBehaviour
         health.onHealed.AddListener(OnHealthChanged);
     }
 
+    void Update()
+    {
+        UpdateHealthBarPosition();
+    }
+
     void CreateHealthBar()
     {
         healthBarOffset = new Vector3(
@@ -86,114 +64,68 @@ public class HealthBar : MonoBehaviour
             0f
         );
 
-        // Create health bar container
-        GameObject healthBarObj = new GameObject("HealthBar");
-        healthBarObj.transform.SetParent(transform);
-        healthBarTransform = healthBarObj.transform;
+        // Find the health bar canvas
+        // TODO: Make this a singleton
+        Canvas healthBarCanvas = GameObject.Find("HealthBarCanvas")?.GetComponent<Canvas>();
+        if (healthBarCanvas == null)
+        {
+            Debug.LogError(
+                "HealthBarCanvas not found in scene. Please create a canvas named 'HealthBarCanvas' for health bars."
+            );
+            return;
+        }
 
-        // Create frame sprite (outermost layer)
-        GameObject frameObj = new GameObject("Frame");
-        frameObj.transform.SetParent(healthBarTransform);
-        frameRenderer = frameObj.AddComponent<SpriteRenderer>();
-        frameRenderer.sprite = sharedSettings.FrameSprite;
-        frameRenderer.sortingLayerName = "Units UI";
-        frameRenderer.sortingOrder = 3; // Highest layer
+        // Instantiate the health bar UI
+        healthBarUI = Instantiate(sharedSettings.HealthBarPrefab, healthBarCanvas.transform);
+        healthBarUI.transform.localScale = new Vector3(scale, scale, 1f);
 
-        // Create unfilled background sprite
-        GameObject unfilledObj = new GameObject("Unfilled");
-        unfilledObj.transform.SetParent(healthBarTransform);
-        unfilledRenderer = unfilledObj.AddComponent<SpriteRenderer>();
-        unfilledRenderer.sprite = sharedSettings.UnfilledBarSprite;
-        unfilledRenderer.sortingLayerName = "Units UI";
-        unfilledRenderer.sortingOrder = 1; // Bottom layer
+        int karmaValue = health.GetComponent<Unit>()?.KarmaValue() ?? 0;
 
-        // Create filled foreground sprite
-        GameObject filledObj = new GameObject("Filled");
-        filledObj.transform.SetParent(healthBarTransform);
-        filledRenderer = filledObj.AddComponent<SpriteRenderer>();
-        filledRenderer.sprite = sharedSettings.FilledBarSprite;
-        filledRenderer.sortingLayerName = "Units UI";
-        filledRenderer.sortingOrder = 2; // Middle layer
+        // Set the color of the health bar
+        healthBarUI.SetKarmaBackgroundColor(
+            health.IsEnemy() ? ENEMY_HEALTH_COLOR
+            : karmaValue > 0 ? FRIEND_KARMA_COLOR
+            : FRIEND_HEALTH_COLOR
+        );
+        healthBarUI.SetHealthBarFillColor(
+            health.IsEnemy() ? ENEMY_HEALTH_COLOR : FRIEND_HEALTH_COLOR
+        );
 
-        // Create dot frame sprite for team indicator
-        GameObject dotFrameObj = new GameObject("DotFrame");
-        dotFrameObj.transform.SetParent(healthBarTransform);
-        dotFrameRenderer = dotFrameObj.AddComponent<SpriteRenderer>();
-        dotFrameRenderer.sprite = sharedSettings.DotFrameSprite;
-        dotFrameRenderer.sortingLayerName = "Units UI";
-        dotFrameRenderer.sortingOrder = 5; // Higher than health bar
-
-        // Create dot fill sprite for team indicator
-        GameObject dotFillObj = new GameObject("DotFill");
-        dotFillObj.transform.SetParent(healthBarTransform);
-        dotFillRenderer = dotFillObj.AddComponent<SpriteRenderer>();
-        dotFillRenderer.sprite = sharedSettings.DotFillSprite;
-        dotFillRenderer.sortingLayerName = "Units UI";
-        dotFillRenderer.sortingOrder = 4; // Between dot frame and health bar
-
-        // Set colors based on unit type
-        SetHealthBarColors();
-
-        // Position the health bar with pixel perfect alignment
-        UpdatePixelPerfectPosition();
-
-        // Update initial health display
+        // Update initial display
+        UpdateKarma(karmaValue);
         UpdateHealthBar();
-
-        healthBarObj.transform.localScale = new Vector3(scale, scale, 1f);
+        UpdateHealthBarPosition();
     }
 
-    void SetHealthBarColors()
+    void UpdateKarma(int karmaValue)
     {
-        // Frame stays neutral/white to preserve the pixel art
-        frameRenderer.color = Color.white;
-        dotFrameRenderer.color = Color.white;
+        if (healthBarUI == null)
+            return;
 
-        if (health.Type() == UnitType.Enemy)
-        {
-            unfilledRenderer.color = ENEMY_BACKGROUND_COLOR;
-            filledRenderer.color = ENEMY_FOREGROUND_COLOR;
-            dotFillRenderer.color = ENEMY_FOREGROUND_COLOR;
-        }
-        else if (health.Type() == UnitType.Friend)
-        {
-            unfilledRenderer.color = FRIEND_BACKGROUND_COLOR;
-            filledRenderer.color = FRIEND_FOREGROUND_COLOR;
-            dotFillRenderer.color = FRIEND_FOREGROUND_COLOR;
-        }
-        else // Neutral
-        {
-            unfilledRenderer.color = NEUTRAL_BACKGROUND_COLOR;
-            filledRenderer.color = NEUTRAL_FOREGROUND_COLOR;
-            dotFillRenderer.color = NEUTRAL_FOREGROUND_COLOR;
-        }
+        healthBarUI.SetKarma(karmaValue);
     }
 
-    void UpdatePixelPerfectPosition()
+    void UpdateHealthBar()
     {
-        if (healthBarTransform == null)
+        if (health == null || healthBarUI == null)
+            return;
+
+        healthBarUI.SetHealthPercent((float)health.CurrentHealth() / health.MaxHealth());
+    }
+
+    void UpdateHealthBarPosition()
+    {
+        if (healthBarUI == null)
             return;
 
         // Calculate desired world position
         Vector3 desiredPosition = transform.position + healthBarOffset;
 
-        // Snap to pixel grid
-        Vector3 snappedPosition = SnapToPixelGrid(desiredPosition);
-        healthBarTransform.position = snappedPosition;
-    }
+        // Convert world position to screen position
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(desiredPosition);
 
-    Vector3 SnapToPixelGrid(Vector3 worldPosition)
-    {
-        // Convert world position to pixel coordinates
-        float pixelX = worldPosition.x * PIXELS_PER_UNIT;
-        float pixelY = worldPosition.y * PIXELS_PER_UNIT;
-
-        // Round to nearest pixel
-        pixelX = Mathf.Round(pixelX);
-        pixelY = Mathf.Round(pixelY);
-
-        // Convert back to world coordinates
-        return new Vector3(pixelX / PIXELS_PER_UNIT, pixelY / PIXELS_PER_UNIT, worldPosition.z);
+        // Set the position in screen space
+        healthBarUI.transform.position = screenPos;
     }
 
     void OnHealthChanged(int amount)
@@ -201,67 +133,9 @@ public class HealthBar : MonoBehaviour
         UpdateHealthBar();
     }
 
-    void UpdateHealthBar()
-    {
-        if (health == null || filledRenderer == null)
-            return;
-
-        // Check visibility first - if not visible, hide everything
-        if (!isVisible)
-        {
-            healthBarTransform.gameObject.SetActive(false);
-            return;
-        }
-
-        float healthPercentage = (float)health.CurrentHealth() / health.MaxHealth();
-        healthPercentage = Mathf.Clamp01(healthPercentage);
-
-        bool isAtFullHealth = health.CurrentHealth() >= health.MaxHealth();
-        bool isAlive = !health.IsDead();
-
-        if (!alwaysShow && isAtFullHealth && isAlive)
-        {
-            // Show team indicator dot, hide health bar components
-            frameRenderer.gameObject.SetActive(false);
-            unfilledRenderer.gameObject.SetActive(false);
-            filledRenderer.gameObject.SetActive(false);
-            dotFrameRenderer.gameObject.SetActive(true);
-            dotFillRenderer.gameObject.SetActive(true);
-
-            // Show the health bar container
-            healthBarTransform.gameObject.SetActive(true);
-        }
-        else if (isAlive)
-        {
-            // Show health bar, hide team indicator dot
-            frameRenderer.gameObject.SetActive(true);
-            unfilledRenderer.gameObject.SetActive(true);
-            filledRenderer.gameObject.SetActive(true);
-            dotFrameRenderer.gameObject.SetActive(false);
-            dotFillRenderer.gameObject.SetActive(false);
-
-            // Scale the filled bar horizontally based on health percentage
-            // This assumes your sprite is designed to be scaled
-            filledRenderer.transform.localScale = new Vector3(healthPercentage, 1f, 1f);
-
-            // Position the filled bar to align with the left side of the frame
-            // You may need to adjust this offset based on your sprite's pivot and dimensions
-            float offsetX = -(1f - healthPercentage) * filledRenderer.sprite.bounds.size.x * 0.5f;
-            filledRenderer.transform.localPosition = new Vector3(offsetX, 0, 0);
-
-            // Show the health bar container
-            healthBarTransform.gameObject.SetActive(true);
-        }
-        else
-        {
-            // Unit is dead, hide everything
-            healthBarTransform.gameObject.SetActive(false);
-        }
-    }
-
     void OnDestroy()
     {
-        if (healthBarTransform != null)
-            Destroy(healthBarTransform.gameObject);
+        if (healthBarUI != null)
+            Destroy(healthBarUI.gameObject);
     }
 }
