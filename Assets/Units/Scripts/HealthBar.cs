@@ -11,9 +11,9 @@ public class HealthBar : MonoBehaviour
 
     private HealthBarSettings sharedSettings;
 
-    private readonly Color ENEMY_HEALTH_COLOR = new Color(1f, 0.5f, 0f, 0.8f);
-    private readonly Color FRIEND_HEALTH_COLOR = new Color(0f, 1f, 0.5f, 0.8f);
-    private readonly Color FRIEND_KARMA_COLOR = new Color(0f, 0.8f, 0.8f, 0.8f);
+    private readonly Color ENEMY_HEALTH_COLOR = new Color(1f, 0.5f, 0f, 0.85f);
+    private readonly Color FRIEND_HEALTH_COLOR = new Color(0f, 1f, 0.5f, 0.85f);
+    private readonly Color FRIEND_KARMA_COLOR = new Color(0f, 0.7f, 0.7f, 0.85f);
 
     private Health health;
     private HealthBarUI healthBarUI;

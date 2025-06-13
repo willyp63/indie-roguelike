@@ -90,7 +90,7 @@ public class HealthBarUI : MonoBehaviour
 
         if (karmaBackground != null)
         {
-            float darknessFactor = karmaValue == 0 ? 1f : 1f - ((9f - karmaValue) / 9f) * 0.3f;
+            float darknessFactor = karmaValue == 0 ? 1f : 1f - ((9f - karmaValue) / 9f) * 0.25f;
             karmaBackground.color = new Color(
                 karmaColor.r * darknessFactor,
                 karmaColor.g * darknessFactor,
