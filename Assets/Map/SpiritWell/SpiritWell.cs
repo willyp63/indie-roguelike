@@ -11,8 +11,11 @@ public class SpiritWell : MonoBehaviour
 
     [SerializeField]
     private float prioritizeWellDistance = 0f;
-
     public float PrioritizeWellDistance => prioritizeWellDistance;
+
+    [SerializeField]
+    private float teleportDistance = 0f;
+    public float TeleportDistance => teleportDistance;
 
     [Header("Portal Settings")]
     [SerializeField]
@@ -27,23 +30,12 @@ public class SpiritWell : MonoBehaviour
         protalTransform.Rotate(rotationSpeed * Time.deltaTime);
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        if (!isEnemy)
-            return;
-
-        // Check if the colliding object is a friendly unit
-        Health health = other.collider.GetComponent<Health>();
-        Unit unit = other.collider.GetComponent<Unit>();
-        if (unit != null && health != null && health.IsFriend())
-        {
-            unit.StartTeleporting(this);
-        }
-    }
-
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, PrioritizeWellDistance);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, TeleportDistance);
     }
 }

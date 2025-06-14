@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 1932464842979773546}
   - component: {fileID: -472275287700479679}
   - component: {fileID: 483642374928168730}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Death Angel
   m_TagString: Friend
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -157,6 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   offsetY: 21
+  alwaysShowHealthBar: 0
 --- !u!114 &805348345232733147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,6 +170,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c411fdfeaa33e4fad0bd28de011660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAirUnit: 0
+  karmaValue: 0
   isStatic: 0
   visionRange: 8
 --- !u!114 &6710175792224304791
@@ -196,9 +199,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3aa4398aa3415f42bbd2f20be75e46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isBasicAttack: 1
   attackDamage: 20
   attackCooldown: 10
   attackDuration: 1
+  isRanged: 0
   attackRange: 7
   attackDelay: 0.33
   animationTrigger: Attack
@@ -221,9 +226,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc143e648a12c96438b443521df3ffc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isBasicAttack: 1
   attackDamage: 10
   attackCooldown: 0
   attackDuration: 1
+  isRanged: 0
   attackRange: 0.2
   attackDelay: 0.33
   animationTrigger: Attack
@@ -255,7 +262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4222383221342083279}
   - component: {fileID: 7638274936289633383}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Down Attack Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -322,7 +329,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1662771279686043465}
   - component: {fileID: 5556140604410964094}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Side Attack Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -389,7 +396,7 @@ GameObject:
   m_Component:
   - component: {fileID: 779924217670266238}
   - component: {fileID: 3227334162178784349}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Up Attack Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -456,7 +463,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9126414426545103523}
   - component: {fileID: 5588850741486833035}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

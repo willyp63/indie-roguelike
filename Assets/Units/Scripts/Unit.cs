@@ -18,6 +18,11 @@ public class Unit : MonoBehaviour
     static readonly float ATTACK_UPDATE_INTERVAL = 0.2f;
 
     [SerializeField]
+    private bool isAirUnit = false;
+
+    public bool IsAirUnit => isAirUnit;
+
+    [SerializeField]
     private int karmaValue = 0;
 
     public int KarmaValue()
@@ -93,7 +98,6 @@ public class Unit : MonoBehaviour
     private const float TELEPORT_SPEED = 0.5f;
     private const float MIN_TELEPORT_SCALE = 0.2f;
 
-    private SpiritWell targetSpiritWell;
     private float initialDistanceToWell = -1f;
     private float initialScale; // Store the initial scale for interpolation
 
@@ -126,9 +130,10 @@ public class Unit : MonoBehaviour
     {
         if (state == UnitState.Teleporting)
         {
-            if (targetSpiritWell != null)
+            if (UnitManager.Instance.EnemySpiritWell != null)
             {
-                Vector2 toWell = targetSpiritWell.transform.position - transform.position;
+                Vector2 toWell =
+                    UnitManager.Instance.EnemySpiritWell.transform.position - transform.position;
                 float distance = toWell.magnitude;
 
                 if (initialDistanceToWell <= 0)
@@ -150,7 +155,10 @@ public class Unit : MonoBehaviour
                     Mathf.Clamp01(distance / initialDistanceToWell)
                 );
                 var xScale =
-                    transform.position.x - targetSpiritWell.transform.position.x < 0 ? 1f : -1f;
+                    transform.position.x - UnitManager.Instance.EnemySpiritWell.transform.position.x
+                    < 0
+                        ? 1f
+                        : -1f;
                 transform.localScale = new Vector3(xScale * scaleFactor, scaleFactor, 1f);
 
                 Vector2 moveDir = toWell.normalized;
@@ -163,9 +171,9 @@ public class Unit : MonoBehaviour
         if (health.IsDead())
             return;
 
-        if (health.IsBrokenCrystal())
+        if (UnitManager.Instance.ShouldTeleportToSpiritWell(this))
         {
-            activeAttack?.CancelAttack();
+            StartTeleporting();
             return;
         }
 
@@ -270,7 +278,8 @@ public class Unit : MonoBehaviour
             // move towards waypoint (precomputed pathfinding)
             targetDirection = WaypointManager.Instance.GetWaypointDirection(
                 transform.position,
-                health.Type()
+                health.Type(),
+                isAirUnit
             );
         }
 
@@ -335,12 +344,11 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void StartTeleporting(SpiritWell spiritWell)
+    private void StartTeleporting()
     {
         if (!health.IsFriend())
             return;
 
-        targetSpiritWell = spiritWell;
         UpdateState(UnitState.Teleporting, "Idle");
         health.Damage(health.MaxHealth());
         activeAttack?.CancelAttack();

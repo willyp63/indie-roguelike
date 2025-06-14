@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1586141657571060384}
   - component: {fileID: 1226063258264188347}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3089245246203476218}
   - component: {fileID: 4908507610892928309}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 7205798534500357727}
   - component: {fileID: 6129286762501518211}
   - component: {fileID: 3035898109337775168}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Forest Whelp
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -264,7 +264,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -307,8 +307,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   scaleFactor: 1
-  maxHealth: 40
-  isImmortal: 0
+  maxHealth: 80
 --- !u!114 &4757610933344571341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,6 +322,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   offsetY: 56
+  alwaysShowHealthBar: 0
 --- !u!114 &5774377235781017747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,7 +335,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c411fdfeaa33e4fad0bd28de011660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  karmaValue: 5
+  isAirUnit: 1
+  karmaValue: 3
   isStatic: 0
   visionRange: 8
 --- !u!114 &7205798534500357727
@@ -351,13 +352,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBasicAttack: 1
-  attackDamage: 15
+  attackDamage: 40
   attackCooldown: 1.5
   attackDuration: 1
+  isRanged: 0
   attackRange: 0.3
   attackDelay: 0.33
   animationTrigger: Attack
-  pushForce: 15
+  pushForce: 10
 --- !u!114 &6129286762501518211
 MonoBehaviour:
   m_ObjectHideFlags: 0

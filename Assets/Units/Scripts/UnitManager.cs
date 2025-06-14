@@ -36,6 +36,8 @@ public class UnitManager : Singleton<UnitManager>
 
     private SpiritWell enemySpiritWell;
 
+    public SpiritWell EnemySpiritWell => enemySpiritWell;
+
     private float lastSpatialUpdate;
     private float lastTargetingUpdate;
 
@@ -177,6 +179,15 @@ public class UnitManager : Singleton<UnitManager>
             < unit.Health().HitBoxRadius() + enemySpiritWell.PrioritizeWellDistance;
     }
 
+    public bool ShouldTeleportToSpiritWell(Unit unit)
+    {
+        if (enemySpiritWell == null)
+            return false;
+
+        return (unit.transform.position - enemySpiritWell.transform.position).magnitude
+            < unit.Health().HitBoxRadius() + enemySpiritWell.TeleportDistance;
+    }
+
     public Vector2 GetMoveDirection(Unit unit, Vector2 targetDirection, float targetDistance)
     {
         // If no waypoint direction, no movement needed
@@ -189,7 +200,8 @@ public class UnitManager : Singleton<UnitManager>
         List<Unit> nearbyUnits = GetNearbyUnits(
             unit.Health(),
             lookAheadDistance,
-            new List<UnitType> { unit.Health().Type() }
+            new List<UnitType> { unit.Health().Type() },
+            unit.IsAirUnit ? UnitElevationFilter.Air : UnitElevationFilter.Ground
         );
 
         // Check if there's a unit directly ahead
@@ -285,7 +297,10 @@ public class UnitManager : Singleton<UnitManager>
             !isAvoidanceBlocked
             && !HasLineOfSight(
                 unit,
-                unit.transform.position + (Vector3)avoidanceDirection * LOOK_AHEAD_DISTANCE
+                unit.transform.position + (Vector3)avoidanceDirection * LOOK_AHEAD_DISTANCE,
+                unit.IsAirUnit
+                    ? LayerMask.GetMask("Tall Walls")
+                    : LayerMask.GetMask("Walls", "Tall Walls")
             )
         )
         {
@@ -306,19 +321,26 @@ public class UnitManager : Singleton<UnitManager>
         return blendedDirection;
     }
 
-    public List<Unit> GetNearbyUnits(Health health, float radius, List<UnitType> includeTypes)
+    public List<Unit> GetNearbyUnits(
+        Health health,
+        float radius,
+        List<UnitType> includeTypes,
+        UnitElevationFilter elevationFilter = UnitElevationFilter.All
+    )
     {
         return GetNearbyUnits(
             health.transform.position,
             radius + health.HitBoxRadius(),
-            includeTypes
+            includeTypes,
+            elevationFilter
         );
     }
 
     public List<Unit> GetNearbyUnits(
         Vector2 targetPosition,
         float radius,
-        List<UnitType> includeTypes
+        List<UnitType> includeTypes,
+        UnitElevationFilter elevationFilter = UnitElevationFilter.All
     )
     {
         List<Unit> nearbyUnits = new List<Unit>();
@@ -347,6 +369,7 @@ public class UnitManager : Singleton<UnitManager>
                         if (
                             unit != null
                             && !unit.Health().IsDead()
+                            && UnitUtils.MatchesElevationFilter(unit, elevationFilter)
                             && includeTypes.Contains(unit.Health().Type())
                             && UnitUtils.IsWithinRange(targetPosition, unit.Health(), radius)
                             && IsOnScreen(unit.transform.position) // Only include units that are on screen
@@ -364,10 +387,16 @@ public class UnitManager : Singleton<UnitManager>
 
     public Unit FindNearestVisibleTarget(Unit searcher)
     {
+        var elevationFilter =
+            searcher.BasicAttack()?.IsRanged() ?? false
+                ? UnitElevationFilter.All
+                : UnitElevationFilter.Ground;
+
         var nearbyUnits = GetNearbyUnits(
             searcher.Health(),
             searcher.VisionRange(),
-            new List<UnitType> { searcher.Health().OppositeType() }
+            new List<UnitType> { searcher.Health().OppositeType() },
+            elevationFilter
         );
 
         Unit closestUnit = null;
@@ -381,7 +410,13 @@ public class UnitManager : Singleton<UnitManager>
             float dSqrToUnit = (searcher.transform.position - unit.transform.position).sqrMagnitude;
             if (
                 dSqrToUnit < closestDistanceSqr
-                && HasLineOfSight(searcher, unit.transform.position)
+                && HasLineOfSight(
+                    searcher,
+                    unit.transform.position,
+                    unit.IsAirUnit
+                        ? LayerMask.GetMask("Tall Walls")
+                        : LayerMask.GetMask("Walls", "Tall Walls")
+                )
             )
             {
                 closestDistanceSqr = dSqrToUnit;
@@ -392,7 +427,7 @@ public class UnitManager : Singleton<UnitManager>
         return closestUnit;
     }
 
-    public bool HasLineOfSight(Unit unit, Vector3 to)
+    public bool HasLineOfSight(Unit unit, Vector3 to, LayerMask layerMask)
     {
         Vector3 direction = to - unit.transform.position;
         float distance = direction.magnitude;
@@ -407,14 +442,14 @@ public class UnitManager : Singleton<UnitManager>
             unit.transform.position + perpendicular,
             normalizedDir,
             distance,
-            LayerMask.GetMask("Wall")
+            layerMask
         );
 
         RaycastHit2D hit2 = Physics2D.Raycast(
             unit.transform.position - perpendicular,
             normalizedDir,
             distance,
-            LayerMask.GetMask("Wall")
+            layerMask
         );
 
         return hit1.collider == null && hit2.collider == null;

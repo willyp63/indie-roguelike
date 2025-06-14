@@ -17,12 +17,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - Wall
-  - 
-  - 
-  - 
+  - Ground Units
+  - Air Units
+  - Walls
+  - Tall Walls
+  - Enemy Well
+  - Player Well
   - 
   - 
   - 

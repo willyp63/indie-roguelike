@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5837694471587382978}
   - component: {fileID: 3475764654486484307}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Shadow (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7020671188858082318}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DownFireLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3916860214666730669}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: UpFireLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,7 +156,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1281321438563006929}
   - component: {fileID: 5858816912684036860}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Goblin Sprite (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5000416790972918480}
   - component: {fileID: 4085678098599102342}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Goblin Sprite (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 2817622195837150257}
   - component: {fileID: 3797261402444048917}
   - component: {fileID: 2318759114926845492}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Goblin Catapult
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -416,7 +416,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -459,7 +459,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   scaleFactor: 1
-  maxHealth: 200
+  maxHealth: 120
 --- !u!114 &3077974714216892289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -487,6 +487,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c411fdfeaa33e4fad0bd28de011660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAirUnit: 0
   karmaValue: 0
   isStatic: 0
   visionRange: 12
@@ -503,13 +504,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBasicAttack: 1
-  attackDamage: 32
-  attackCooldown: 0
+  attackDamage: 100
+  attackCooldown: 5
   attackDuration: 2.5
+  isRanged: 1
   attackRange: 12
   attackDelay: 1
   animationTrigger: Attack
-  pushForce: 10
+  pushForce: 50
   projectilePrefab: {fileID: 6459866506392287012, guid: 124ccb6ac2820d24593805ab917b7f06, type: 3}
   downFireLocation: {fileID: 7020671188858082318}
   sideFireLocation: {fileID: 6163512192157009173}
@@ -564,7 +566,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5170674404320457456}
   - component: {fileID: 2609231123529918589}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Catapult Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -647,7 +649,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6163512192157009173}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SideFireLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}

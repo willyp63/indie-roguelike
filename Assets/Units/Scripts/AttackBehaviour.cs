@@ -38,6 +38,14 @@ public abstract class AttackBehaviour : MonoBehaviour
     }
 
     [SerializeField]
+    protected bool isRanged = false;
+
+    public bool IsRanged()
+    {
+        return isRanged;
+    }
+
+    [SerializeField]
     protected float attackRange = 0f;
 
     public float AttackRange()

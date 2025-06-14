@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2426098268607408606}
   - component: {fileID: 5128811880388072377}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 3714227660342494195}
   - component: {fileID: 2091193611143812885}
   - component: {fileID: 3586196865677724982}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Heal Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -201,7 +201,7 @@ GameObject:
   - component: {fileID: 2954945860264523057}
   - component: {fileID: 3100067945931843959}
   - component: {fileID: 5306583959337583954}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Heal Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5131,7 +5131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 422181947161630883}
   - component: {fileID: 2671274866798343954}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5214,7 +5214,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4305245773759861399}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SideFireLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5255,7 +5255,7 @@ GameObject:
   - component: {fileID: 4363468634754478066}
   - component: {fileID: 7796966888706663968}
   - component: {fileID: 1510544951607728106}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Angel
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -5338,7 +5338,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5382,7 +5382,6 @@ MonoBehaviour:
   type: 1
   scaleFactor: 1
   maxHealth: 80
-  isImmortal: 0
 --- !u!114 &8511421165949528933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5395,9 +5394,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274dcc9e703802c4796a2b4bae9e1898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarPrefab: {fileID: 6727361068164962687, guid: 19a1227a8c8cc4c48ba79b178db7f1b4, type: 3}
   scale: 1
   offsetY: 21
+  alwaysShowHealthBar: 0
 --- !u!114 &3030478209441554987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5410,6 +5409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c411fdfeaa33e4fad0bd28de011660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAirUnit: 0
   karmaValue: 0
   isStatic: 0
   visionRange: 8
@@ -5446,6 +5446,7 @@ MonoBehaviour:
   attackDamage: 8
   attackCooldown: 0
   attackDuration: 2
+  isRanged: 1
   attackRange: 4
   attackDelay: 0.5
   animationTrigger: Attack
@@ -5491,7 +5492,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3262526053867707790}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DownFireLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5522,7 +5523,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1431476694317910546}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: UpFireLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9165279585010991333}
   - component: {fileID: 1579903174567484224}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 1019995738945164867}
   - component: {fileID: 895308647169813977}
   - component: {fileID: 5035274116155495219}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Orc Shaman
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -183,7 +183,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -226,8 +226,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   scaleFactor: 1
-  maxHealth: 90
-  isImmortal: 0
+  maxHealth: 200
 --- !u!114 &1865914117436917123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,9 +239,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274dcc9e703802c4796a2b4bae9e1898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarPrefab: {fileID: 6727361068164962687, guid: 19a1227a8c8cc4c48ba79b178db7f1b4, type: 3}
   scale: 1
   offsetY: 23
+  alwaysShowHealthBar: 0
 --- !u!114 &2431124736639993226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,6 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c411fdfeaa33e4fad0bd28de011660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAirUnit: 0
   karmaValue: 0
   isStatic: 0
   visionRange: 8
@@ -271,13 +271,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBasicAttack: 1
-  attackDamage: 24
-  attackCooldown: 0
+  attackDamage: 50
+  attackCooldown: 2
   attackDuration: 1
+  isRanged: 0
   attackRange: 0.2
   attackDelay: 0.5
   animationTrigger: Attack
-  pushForce: 20
+  pushForce: 30
   downAttackCollider: {fileID: 5400499572490922035}
   sideAttackCollider: {fileID: 2542813121495247294}
   upAttackCollider: {fileID: 6282582393627390918}
@@ -294,7 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81ed5e6e0923c6a41a3119359eaa4f17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1.5
+  speed: 1.25
 --- !u!114 &5035274116155495219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,7 +319,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4721548365590790231}
   - component: {fileID: 2542813121495247294}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Side Attack Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -385,7 +386,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4820701559202738850}
   - component: {fileID: 5400499572490922035}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Down Attack Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -452,7 +453,7 @@ GameObject:
   m_Component:
   - component: {fileID: 906870544405537981}
   - component: {fileID: 6282582393627390918}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Up Attack Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -519,7 +520,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7081777255283916262}
   - component: {fileID: 3129730247710119530}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}

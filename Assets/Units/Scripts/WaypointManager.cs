@@ -7,6 +7,8 @@ public class WaypointZone
 {
     public UnitType unitType;
 
+    public bool isAir;
+
     public Bounds zone;
 
     public List<Waypoint> waypoints;
@@ -15,17 +17,34 @@ public class WaypointZone
 [System.Serializable]
 public struct WaypointGridCell
 {
-    public Vector2 friendDirection;
-    public Vector2 enemyDirection;
-    public bool hasFriendWaypoint;
-    public bool hasEnemyWaypoint;
+    public Vector2 friendGroundDirection;
+    public Vector2 friendAirDirection;
+    public Vector2 enemyGroundDirection;
+    public Vector2 enemyAirDirection;
+    public bool hasFriendGroundWaypoint;
+    public bool hasFriendAirWaypoint;
+    public bool hasEnemyGroundWaypoint;
+    public bool hasEnemyAirWaypoint;
 
-    public WaypointGridCell(Vector2 friendDir, Vector2 enemyDir, bool hasFriend, bool hasEnemy)
+    public WaypointGridCell(
+        Vector2 friendGroundDir,
+        Vector2 friendAirDir,
+        Vector2 enemyGroundDir,
+        Vector2 enemyAirDir,
+        bool hasFriendGround,
+        bool hasFriendAir,
+        bool hasEnemyGround,
+        bool hasEnemyAir
+    )
     {
-        friendDirection = friendDir;
-        enemyDirection = enemyDir;
-        hasFriendWaypoint = hasFriend;
-        hasEnemyWaypoint = hasEnemy;
+        friendGroundDirection = friendGroundDir;
+        friendAirDirection = friendAirDir;
+        enemyGroundDirection = enemyGroundDir;
+        enemyAirDirection = enemyAirDir;
+        hasFriendGroundWaypoint = hasFriendGround;
+        hasFriendAirWaypoint = hasFriendAir;
+        hasEnemyGroundWaypoint = hasEnemyGround;
+        hasEnemyAirWaypoint = hasEnemyAir;
     }
 }
 
@@ -76,9 +95,11 @@ public class WaypointManager : Singleton<WaypointManager>
 
     public Vector2 GetGridOrigin() => gridOrigin;
 
-    public WaypointZone GetZone(UnitType unitType, Vector2 unitPosition)
+    public WaypointZone GetZone(UnitType unitType, bool isAir, Vector2 unitPosition)
     {
-        return zones.Find(zone => unitType == zone.unitType && zone.zone.Contains(unitPosition));
+        return zones.Find(zone =>
+            unitType == zone.unitType && isAir == zone.isAir && zone.zone.Contains(unitPosition)
+        );
     }
 
     public void ComputeWaypointGrid()
@@ -98,15 +119,33 @@ public class WaypointManager : Singleton<WaypointManager>
                     minBounds
                     + new Vector2(x * cellSize + cellSize * 0.5f, y * cellSize + cellSize * 0.5f);
 
-                // Compute best waypoint for each unit type
-                Vector2 friendDirection = ComputeBestWaypointDirection(worldPos, UnitType.Friend);
-                Vector2 enemyDirection = ComputeBestWaypointDirection(worldPos, UnitType.Enemy);
+                // Compute best waypoint for each unit type and movement type
+                Vector2 friendGroundDir = ComputeBestWaypointDirection(
+                    worldPos,
+                    UnitType.Friend,
+                    false
+                );
+                Vector2 friendAirDir = ComputeBestWaypointDirection(
+                    worldPos,
+                    UnitType.Friend,
+                    true
+                );
+                Vector2 enemyGroundDir = ComputeBestWaypointDirection(
+                    worldPos,
+                    UnitType.Enemy,
+                    false
+                );
+                Vector2 enemyAirDir = ComputeBestWaypointDirection(worldPos, UnitType.Enemy, true);
 
                 WaypointGridCell cell = new WaypointGridCell(
-                    friendDirection,
-                    enemyDirection,
-                    friendDirection != Vector2.zero,
-                    enemyDirection != Vector2.zero
+                    friendGroundDir,
+                    friendAirDir,
+                    enemyGroundDir,
+                    enemyAirDir,
+                    friendGroundDir != Vector2.zero,
+                    friendAirDir != Vector2.zero,
+                    enemyGroundDir != Vector2.zero,
+                    enemyAirDir != Vector2.zero
                 );
 
                 grid[gridPos] = cell;
@@ -116,10 +155,14 @@ public class WaypointManager : Singleton<WaypointManager>
         Debug.Log($"Computed waypoint grid with {grid.Count} cells");
     }
 
-    private Vector2 ComputeBestWaypointDirection(Vector2 worldPosition, UnitType unitType)
+    private Vector2 ComputeBestWaypointDirection(
+        Vector2 worldPosition,
+        UnitType unitType,
+        bool isAirUnit
+    )
     {
         // Find the best waypoint using existing logic
-        WaypointZone zone = GetZone(unitType, worldPosition);
+        WaypointZone zone = GetZone(unitType, isAirUnit, worldPosition);
         Vector2 bestDirection = Vector2.zero;
 
         if (zone != null)
@@ -133,8 +176,17 @@ public class WaypointManager : Singleton<WaypointManager>
                 if (waypoint == null)
                     continue;
 
-                // Check line of sight (simplified - just check for walls)
-                if (!HasLineOfSight(worldPosition, waypoint.transform.position))
+                // Check line of sight
+                if (
+                    !HasLineOfSight(
+                        worldPosition,
+                        waypoint.transform.position,
+                        isAirUnit ? LayerMask.GetMask("Tall Walls")
+                            : unitType == UnitType.Enemy
+                                ? LayerMask.GetMask("Walls", "Tall Walls", "Enemy Well")
+                            : LayerMask.GetMask("Walls", "Tall Walls", "Player Well")
+                    )
+                )
                     continue;
 
                 // Check if this waypoint has higher priority
@@ -167,34 +219,35 @@ public class WaypointManager : Singleton<WaypointManager>
         return bestDirection;
     }
 
-    private bool HasLineOfSight(Vector2 from, Vector2 to)
+    // TODO: consolidate with method in UnitManager
+    private bool HasLineOfSight(Vector2 from, Vector2 to, LayerMask layerMask)
     {
         Vector2 direction = to - from;
         float distance = direction.magnitude;
 
-        RaycastHit2D hit = Physics2D.Raycast(
-            from,
-            direction.normalized,
-            distance,
-            LayerMask.GetMask("Wall")
-        );
+        RaycastHit2D hit = Physics2D.Raycast(from, direction.normalized, distance, layerMask);
         return hit.collider == null;
     }
 
-    public Vector2 GetWaypointDirection(Vector3 worldPosition, UnitType unitType)
+    public Vector2 GetWaypointDirection(Vector3 worldPosition, UnitType unitType, bool isAirUnit)
     {
         Vector2Int gridPos = WorldToGrid(worldPosition);
 
         if (grid.TryGetValue(gridPos, out WaypointGridCell cell))
         {
-            switch (unitType)
+            if (unitType == UnitType.Friend)
             {
-                case UnitType.Friend:
-                    return cell.hasFriendWaypoint ? cell.friendDirection : Vector2.zero;
-                case UnitType.Enemy:
-                    return cell.hasEnemyWaypoint ? cell.enemyDirection : Vector2.zero;
-                default:
-                    return Vector2.zero;
+                if (isAirUnit)
+                    return cell.hasFriendAirWaypoint ? cell.friendAirDirection : Vector2.zero;
+                else
+                    return cell.hasFriendGroundWaypoint ? cell.friendGroundDirection : Vector2.zero;
+            }
+            else if (unitType == UnitType.Enemy)
+            {
+                if (isAirUnit)
+                    return cell.hasEnemyAirWaypoint ? cell.enemyAirDirection : Vector2.zero;
+                else
+                    return cell.hasEnemyGroundWaypoint ? cell.enemyGroundDirection : Vector2.zero;
             }
         }
 
@@ -247,18 +300,32 @@ public class WaypointManager : Singleton<WaypointManager>
             WaypointGridCell cell = kvp.Value;
             Vector2 worldPos = GridToWorld(gridPos);
 
-            // Draw friend direction arrow
-            if (showFriendArrows && cell.hasFriendWaypoint)
+            // Draw friend ground direction arrow
+            if (showFriendArrows && cell.hasFriendGroundWaypoint)
             {
                 Gizmos.color = Color.green;
-                DrawArrow(worldPos, cell.friendDirection, arrowSize * 0.5f);
+                DrawArrow(worldPos, cell.friendGroundDirection, arrowSize * 0.5f);
             }
 
-            // Draw enemy direction arrow
-            if (showEnemyArrows && cell.hasEnemyWaypoint)
+            // Draw friend air direction arrow
+            if (showFriendArrows && cell.hasFriendAirWaypoint)
+            {
+                Gizmos.color = Color.blue;
+                DrawArrow(worldPos, cell.friendAirDirection, arrowSize * 0.5f);
+            }
+
+            // Draw enemy ground direction arrow
+            if (showEnemyArrows && cell.hasEnemyGroundWaypoint)
             {
                 Gizmos.color = Color.red;
-                DrawArrow(worldPos, cell.enemyDirection, arrowSize * 0.5f);
+                DrawArrow(worldPos, cell.enemyGroundDirection, arrowSize * 0.5f);
+            }
+
+            // Draw enemy air direction arrow
+            if (showEnemyArrows && cell.hasEnemyAirWaypoint)
+            {
+                Gizmos.color = Color.yellow;
+                DrawArrow(worldPos, cell.enemyAirDirection, arrowSize * 0.5f);
             }
         }
     }

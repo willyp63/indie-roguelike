@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5607414178403845743}
   - component: {fileID: 3636305702717029000}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4920332770782847422}
   - component: {fileID: 5285194743248690086}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 320543928624339474}
   - component: {fileID: 825673808469722490}
   - component: {fileID: 1139543024765099194}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Orc Warrior
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -264,7 +264,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -307,8 +307,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   scaleFactor: 1
-  maxHealth: 60
-  isImmortal: 0
+  maxHealth: 250
 --- !u!114 &3285522741092369362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,9 +320,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274dcc9e703802c4796a2b4bae9e1898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarPrefab: {fileID: 6727361068164962687, guid: 19a1227a8c8cc4c48ba79b178db7f1b4, type: 3}
   scale: 1
   offsetY: 21
+  alwaysShowHealthBar: 0
 --- !u!114 &819670602864276031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,6 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c411fdfeaa33e4fad0bd28de011660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAirUnit: 0
   karmaValue: 0
   isStatic: 0
   visionRange: 8
@@ -352,9 +352,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBasicAttack: 1
-  attackDamage: 16
-  attackCooldown: 0
+  attackDamage: 50
+  attackCooldown: 1
   attackDuration: 1
+  isRanged: 0
   attackRange: 0.3
   attackDelay: 0.33
   animationTrigger: Attack
@@ -371,7 +372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81ed5e6e0923c6a41a3119359eaa4f17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1.5
+  speed: 1.25
 --- !u!114 &1139543024765099194
 MonoBehaviour:
   m_ObjectHideFlags: 0

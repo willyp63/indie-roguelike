@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6754784107447789546}
   - component: {fileID: 8222124855539634213}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3237014927085619140}
   - component: {fileID: 5685413632210158896}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 3819654696589159091}
   - component: {fileID: 568831530932574803}
   - component: {fileID: 6833381311341896162}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ent
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -264,7 +264,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -307,8 +307,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   scaleFactor: 1
-  maxHealth: 800
-  isImmortal: 0
+  maxHealth: 900
 --- !u!114 &544263056596741279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,7 +321,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scale: 1
-  offsetY: 32
+  offsetY: 36
+  alwaysShowHealthBar: 0
 --- !u!114 &3804696478075084463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,11 +335,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c411fdfeaa33e4fad0bd28de011660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  karmaValue: 9
+  isAirUnit: 0
+  karmaValue: 6
   isStatic: 0
   visionRange: 8
-  teleportSpeed: 0.5
-  minScale: 0.1
 --- !u!114 &3819654696589159091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,13 +352,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBasicAttack: 1
-  attackDamage: 60
+  attackDamage: 100
   attackCooldown: 3
   attackDuration: 1
+  isRanged: 0
   attackRange: 0.3
   attackDelay: 0.33
   animationTrigger: Attack
-  pushForce: 30
+  pushForce: 100
 --- !u!114 &568831530932574803
 MonoBehaviour:
   m_ObjectHideFlags: 0

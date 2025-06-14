@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4554491320734657337}
   - component: {fileID: 7015478441253045851}
   - component: {fileID: 6459866506392287012}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Elf Sharpshooter Arrow
   m_TagString: Projectile
   m_Icon: {fileID: 0}

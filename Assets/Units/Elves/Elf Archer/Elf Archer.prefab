@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3786076288066449267}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: UpFireLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7666307093870782990}
   - component: {fileID: 2682414462717057761}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2718503354559424208}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SideFireLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5789412653640920053}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DownFireLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,7 +187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3104154968111721112}
   - component: {fileID: 8396304153032728401}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -279,7 +279,7 @@ GameObject:
   - component: {fileID: 1630167583429081478}
   - component: {fileID: 807981405905685892}
   - component: {fileID: 5085006443041426592}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Elf Archer
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -360,7 +360,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -404,7 +404,6 @@ MonoBehaviour:
   type: 1
   scaleFactor: 1
   maxHealth: 30
-  isImmortal: 0
 --- !u!114 &1865560453869441822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -419,6 +418,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   offsetY: 21
+  alwaysShowHealthBar: 0
 --- !u!114 &1860159409765746910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,6 +431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c411fdfeaa33e4fad0bd28de011660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAirUnit: 0
   karmaValue: 1
   isStatic: 0
   visionRange: 8
@@ -450,6 +451,7 @@ MonoBehaviour:
   attackDamage: 20
   attackCooldown: 2
   attackDuration: 1
+  isRanged: 1
   attackRange: 6
   attackDelay: 0.5
   animationTrigger: Attack
@@ -472,7 +474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81ed5e6e0923c6a41a3119359eaa4f17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1.5
+  speed: 1.25
 --- !u!114 &5085006443041426592
 MonoBehaviour:
   m_ObjectHideFlags: 0

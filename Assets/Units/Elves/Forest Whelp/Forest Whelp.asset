@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Forest Whelp
   description: Weak flying unit
   cardArt: {fileID: 1748621946, guid: 0a8bd58bfbeb8c7418d1ff9e9d3f7354, type: 3}
-  manaCost: 1
-  unitCount: 1
+  manaCost: 4
+  unitCount: 2
   unitPrefab: {fileID: 5774377235781017747, guid: b0c5ca9a222fcde4cb049bae3072e55a, type: 3}
   spellPrefab: {fileID: 0}

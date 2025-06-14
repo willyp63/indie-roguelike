@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8450433471547431964}
   - component: {fileID: 8988323436530155800}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 1383792184305335344}
   - component: {fileID: 3860248191987932147}
   - component: {fileID: 6052434053035880744}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Elf Templar
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -224,7 +224,6 @@ MonoBehaviour:
   type: 1
   scaleFactor: 1
   maxHealth: 120
-  isImmortal: 0
 --- !u!114 &5650913186678976694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,9 +236,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274dcc9e703802c4796a2b4bae9e1898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarPrefab: {fileID: 6727361068164962687, guid: 19a1227a8c8cc4c48ba79b178db7f1b4, type: 3}
   scale: 1
   offsetY: 22
+  alwaysShowHealthBar: 0
 --- !u!114 &4487921303902649061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,6 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c411fdfeaa33e4fad0bd28de011660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAirUnit: 0
   karmaValue: 0
   isStatic: 0
   visionRange: 8
@@ -271,6 +271,7 @@ MonoBehaviour:
   attackDamage: 24
   attackCooldown: 0
   attackDuration: 1
+  isRanged: 0
   attackRange: 0.3
   attackDelay: 0.33
   animationTrigger: Attack
@@ -311,7 +312,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2729374196723418252}
   - component: {fileID: 1556194313521310992}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

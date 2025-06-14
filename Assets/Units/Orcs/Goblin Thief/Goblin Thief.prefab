@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 7242480133114730641}
   - component: {fileID: 6350714185624584903}
   - component: {fileID: 1047030306345722732}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Goblin Thief
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -140,7 +140,6 @@ MonoBehaviour:
   type: 1
   scaleFactor: 1
   maxHealth: 20
-  isImmortal: 0
 --- !u!114 &62174952112877817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,9 +152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274dcc9e703802c4796a2b4bae9e1898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarPrefab: {fileID: 6727361068164962687, guid: 19a1227a8c8cc4c48ba79b178db7f1b4, type: 3}
   scale: 1
   offsetY: 15
+  alwaysShowHealthBar: 0
 --- !u!114 &6730860801600111186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c411fdfeaa33e4fad0bd28de011660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAirUnit: 0
   karmaValue: 0
   isStatic: 0
   visionRange: 8
@@ -210,13 +210,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBasicAttack: 1
-  attackDamage: 12
+  attackDamage: 10
   attackCooldown: 0
   attackDuration: 1
+  isRanged: 0
   attackRange: 0.15
   attackDelay: 0.5
   animationTrigger: Attack
-  pushForce: 0
+  pushForce: 5
 --- !u!1 &6996995549902311048
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,7 +228,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5905279015173367989}
   - component: {fileID: 1452414586945633976}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -311,7 +312,7 @@ GameObject:
   m_Component:
   - component: {fileID: 392259334778554089}
   - component: {fileID: 8811837095440419956}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -84,18 +84,6 @@ public class Health : MonoBehaviour
         return currentHealth >= maxHealth;
     }
 
-    private bool isBrokenCrystal = false;
-
-    public bool IsBrokenCrystal()
-    {
-        return isBrokenCrystal;
-    }
-
-    public void SetIsBrokenCrystal(bool isBroken)
-    {
-        isBrokenCrystal = isBroken;
-    }
-
     [NonSerialized]
     public UnityEvent<int> onDamageTaken;
 
@@ -126,7 +114,7 @@ public class Health : MonoBehaviour
 
     public void Damage(int damage)
     {
-        if (IsBrokenCrystal() || IsDead())
+        if (IsDead())
             return;
 
         if (damage < 0)

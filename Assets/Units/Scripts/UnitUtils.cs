@@ -2,6 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+public enum UnitElevationFilter
+{
+    All,
+    Air,
+    Ground,
+}
+
 public enum UnitType
 {
     Friend,
@@ -72,6 +79,21 @@ public static class UnitUtils
         return attackerType == UnitType.Neutral
             || targetType == UnitType.Neutral
             || (attackerType != targetType);
+    }
+
+    public static bool MatchesElevationFilter(Unit unit, UnitElevationFilter elevationFilter)
+    {
+        switch (elevationFilter)
+        {
+            case UnitElevationFilter.All:
+                return true;
+            case UnitElevationFilter.Air:
+                return unit.IsAirUnit;
+            case UnitElevationFilter.Ground:
+                return !unit.IsAirUnit;
+            default:
+                return false;
+        }
     }
 
     public static List<Vector2> GetSpreadPositions(Vector2 center, int count, float unitRadius)

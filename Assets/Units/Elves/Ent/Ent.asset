@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Ent
   description: Strong melee unit
   cardArt: {fileID: 1237080007, guid: a77f8986c81c78c459ca3c35f911bcee, type: 3}
-  manaCost: 4
+  manaCost: 5
   unitCount: 1
   unitPrefab: {fileID: 3804696478075084463, guid: f86c808894daf854385f88934b3b9da3, type: 3}
   spellPrefab: {fileID: 0}
