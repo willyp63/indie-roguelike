@@ -460,7 +460,6 @@ MonoBehaviour:
   type: 1
   scaleFactor: 1
   maxHealth: 200
-  isImmortal: 0
 --- !u!114 &3077974714216892289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -475,6 +474,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   offsetY: 25
+  alwaysShowHealthBar: 0
 --- !u!114 &3580501831942194810
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Unit : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Unit : MonoBehaviour
         Pursuing,
         Attacking,
         Dying,
+        Teleporting,
     };
 
     static readonly float ATTACK_UPDATE_INTERVAL = 0.2f;
@@ -88,6 +90,13 @@ public class Unit : MonoBehaviour
 
     private UnitState state = UnitState.Idle;
 
+    private const float TELEPORT_SPEED = 0.5f;
+    private const float MIN_TELEPORT_SCALE = 0.2f;
+
+    private SpiritWell targetSpiritWell;
+    private float initialDistanceToWell = -1f;
+    private float initialScale; // Store the initial scale for interpolation
+
     private void Start()
     {
         health = GetComponent<Health>();
@@ -103,6 +112,9 @@ public class Unit : MonoBehaviour
         health.onDeath.AddListener(OnDeath);
 
         UnitManager.Instance.RegisterUnit(this);
+
+        // Store initial scale
+        initialScale = transform.localScale.x;
     }
 
     private void OnDestroy()
@@ -112,6 +124,42 @@ public class Unit : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (state == UnitState.Teleporting)
+        {
+            if (targetSpiritWell != null)
+            {
+                Vector2 toWell = targetSpiritWell.transform.position - transform.position;
+                float distance = toWell.magnitude;
+
+                if (initialDistanceToWell <= 0)
+                {
+                    initialDistanceToWell = distance;
+                }
+
+                if (distance < 0.1f)
+                {
+                    // TODO: Give the player karma points
+                    Destroy(gameObject);
+                    return;
+                }
+
+                // Calculate scale based on distance
+                float scaleFactor = Mathf.Lerp(
+                    MIN_TELEPORT_SCALE,
+                    initialScale,
+                    Mathf.Clamp01(distance / initialDistanceToWell)
+                );
+                var xScale =
+                    transform.position.x - targetSpiritWell.transform.position.x < 0 ? 1f : -1f;
+                transform.localScale = new Vector3(xScale * scaleFactor, scaleFactor, 1f);
+
+                Vector2 moveDir = toWell.normalized;
+                Vector2 force = moveDir * TELEPORT_SPEED * rb.mass / Time.fixedDeltaTime;
+                rb.AddForce(force);
+            }
+            return;
+        }
+
         if (health.IsDead())
             return;
 
@@ -160,27 +208,38 @@ public class Unit : MonoBehaviour
 
     public void UpdateTargetFromManager()
     {
-        // clear target if it's dead or out of range
-        if (targetUnit != null)
-        {
-            if (
-                targetUnit.Health().IsDead()
-                || !UnitUtils.IsWithinRange(
-                    health,
-                    targetUnit.Health(),
-                    basicAttack?.AttackRange() ?? visionRange
-                )
-            )
-            {
-                targetUnit = null;
-                activeAttack?.CancelAttack();
-            }
-        }
+        if (state == UnitState.Teleporting)
+            return;
 
-        // look for a new target if we don't have one
-        if (targetUnit == null)
+        if (UnitManager.Instance.ShouldPrioritizeSpiritWell(this))
         {
-            targetUnit = UnitManager.Instance.FindNearestVisibleTarget(this);
+            targetUnit = null;
+            activeAttack?.CancelAttack();
+        }
+        else
+        {
+            // clear target if it's dead or out of range
+            if (targetUnit != null)
+            {
+                if (
+                    targetUnit.Health().IsDead()
+                    || !UnitUtils.IsWithinRange(
+                        health,
+                        targetUnit.Health(),
+                        basicAttack?.AttackRange() ?? visionRange
+                    )
+                )
+                {
+                    targetUnit = null;
+                    activeAttack?.CancelAttack();
+                }
+            }
+
+            // look for a new target if we don't have one
+            if (targetUnit == null)
+            {
+                targetUnit = UnitManager.Instance.FindNearestVisibleTarget(this);
+            }
         }
 
         if (isStatic)
@@ -239,6 +298,9 @@ public class Unit : MonoBehaviour
     {
         GetComponent<CircleCollider2D>().enabled = false;
 
+        if (state == UnitState.Teleporting)
+            return;
+
         if (animator != null)
             UpdateState(UnitState.Dying, "Die");
         else
@@ -270,6 +332,28 @@ public class Unit : MonoBehaviour
             case Direction.Up:
                 animator?.SetInteger("Direction", 2);
                 break;
+        }
+    }
+
+    public void StartTeleporting(SpiritWell spiritWell)
+    {
+        if (!health.IsFriend())
+            return;
+
+        targetSpiritWell = spiritWell;
+        UpdateState(UnitState.Teleporting, "Idle");
+        health.Damage(health.MaxHealth());
+        activeAttack?.CancelAttack();
+
+        SpriteRenderer spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        SortingGroup sortingGroup = GetComponent<SortingGroup>();
+        if (sortingGroup != null)
+        {
+            sortingGroup.sortingLayerName = "Teleporting Units";
+        }
+        else if (spriteRenderer != null)
+        {
+            spriteRenderer.sortingLayerName = "Teleporting Units";
         }
     }
 }

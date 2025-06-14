@@ -76,7 +76,7 @@ public class Health : MonoBehaviour
 
     public bool IsDead()
     {
-        return currentHealth <= 0 && !isImmortal;
+        return currentHealth <= 0;
     }
 
     public bool IsFullHealth()
@@ -95,9 +95,6 @@ public class Health : MonoBehaviour
     {
         isBrokenCrystal = isBroken;
     }
-
-    [SerializeField]
-    private bool isImmortal = false;
 
     [NonSerialized]
     public UnityEvent<int> onDamageTaken;

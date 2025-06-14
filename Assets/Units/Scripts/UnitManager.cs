@@ -34,12 +34,20 @@ public class UnitManager : Singleton<UnitManager>
     private const float AVOIDANCE_BLEND_STRENGTH = 1.75f;
     private const float AVOIDANCE_SPEED_THRESHOLD = 0.9f;
 
+    private SpiritWell enemySpiritWell;
+
     private float lastSpatialUpdate;
     private float lastTargetingUpdate;
 
     // Batch processing
     private int unitsPerFrameForTargeting = 200;
     private int currentTargetingIndex = 0;
+
+    void Start()
+    {
+        SpiritWell[] wells = GameObject.FindObjectsOfType<SpiritWell>();
+        enemySpiritWell = System.Array.Find(wells, well => well.IsEnemy);
+    }
 
     void Update()
     {
@@ -158,6 +166,15 @@ public class UnitManager : Singleton<UnitManager>
             && viewportPoint.y >= -bufferNormalized
             && viewportPoint.y <= 1f + bufferNormalized
             && viewportPoint.z > 0; // Must be in front of camera
+    }
+
+    public bool ShouldPrioritizeSpiritWell(Unit unit)
+    {
+        if (enemySpiritWell == null)
+            return false;
+
+        return (unit.transform.position - enemySpiritWell.transform.position).magnitude
+            < unit.Health().HitBoxRadius() + enemySpiritWell.PrioritizeWellDistance;
     }
 
     public Vector2 GetMoveDirection(Unit unit, Vector2 targetDirection, float targetDistance)

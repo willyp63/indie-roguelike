@@ -9,6 +9,9 @@ public class HealthBar : MonoBehaviour
     [SerializeField]
     private int offsetY = 24;
 
+    [SerializeField]
+    private bool alwaysShowHealthBar = false;
+
     private HealthBarSettings sharedSettings;
 
     private readonly Color ENEMY_HEALTH_COLOR = new Color(1f, 0.5f, 0f, 0.85f);
@@ -78,6 +81,7 @@ public class HealthBar : MonoBehaviour
         // Instantiate the health bar UI
         healthBarUI = Instantiate(sharedSettings.HealthBarPrefab, healthBarCanvas.transform);
         healthBarUI.transform.localScale = new Vector3(scale, scale, 1f);
+        healthBarUI.SetAlwaysShowHealthBar(alwaysShowHealthBar);
 
         int karmaValue = health.GetComponent<Unit>()?.KarmaValue() ?? 0;
 

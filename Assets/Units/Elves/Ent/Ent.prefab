@@ -338,6 +338,8 @@ MonoBehaviour:
   karmaValue: 9
   isStatic: 0
   visionRange: 8
+  teleportSpeed: 0.5
+  minScale: 0.1
 --- !u!114 &3819654696589159091
 MonoBehaviour:
   m_ObjectHideFlags: 0

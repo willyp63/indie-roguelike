@@ -47,6 +47,8 @@ public class HealthBarUI : MonoBehaviour
 
     private Color karmaColor;
 
+    private bool alwaysShowHealthBar = false;
+
     private Vector3 originalKarmaPosition;
     private Vector3 originalHealthBarPosition;
 
@@ -90,7 +92,7 @@ public class HealthBarUI : MonoBehaviour
 
         if (karmaBackground != null)
         {
-            float darknessFactor = karmaValue == 0 ? 1f : 1f - ((9f - karmaValue) / 9f) * 0.25f;
+            float darknessFactor = karmaValue == 0 ? 1f : 1f - ((9f - karmaValue) / 9f) * 0.4f;
             karmaBackground.color = new Color(
                 karmaColor.r * darknessFactor,
                 karmaColor.g * darknessFactor,
@@ -118,8 +120,8 @@ public class HealthBarUI : MonoBehaviour
     private void UpdateVisibility()
     {
         bool isDead = healthPercent <= 0f;
-        bool isHealthBarVisible = !isDead && healthPercent < 1f;
-        bool isKarmaVisible = !isDead && (karmaValue > 0 || healthPercent >= 1f);
+        bool isHealthBarVisible = !isDead && (healthPercent < 1f || alwaysShowHealthBar);
+        bool isKarmaVisible = !isDead && (karmaValue > 0 || !isHealthBarVisible);
 
         healthBar.gameObject.SetActive(isHealthBarVisible);
         karmaDisplay.gameObject.SetActive(isKarmaVisible);
@@ -153,5 +155,11 @@ public class HealthBarUI : MonoBehaviour
         {
             healthBarFill.color = color;
         }
+    }
+
+    public void SetAlwaysShowHealthBar(bool value)
+    {
+        alwaysShowHealthBar = value;
+        UpdateVisibility();
     }
 }
